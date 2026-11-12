@@ -1,0 +1,11 @@
+'use client';
+import {useState} from 'react';
+import {cleanText,dateInput,dateText,money,recordMobile,today,type RecordRow} from '../lib/model';
+import {isPromissory} from '../lib/promissory';
+import MobileContact from './mobile-contact';
+export default function DueContacts({records,onOpen}:{records:RecordRow[];onOpen:(row:RecordRow)=>void}){
+ const [query,setQuery]=useState(''),[scope,setScope]=useState('due'),day=today();
+ const dated=records.filter(row=>dateInput(row.values[16])).sort((a,b)=>dateInput(a.values[16]).localeCompare(dateInput(b.values[16])));
+ const due=dated.filter(row=>dateInput(row.values[16])<=day),selected=dated.filter(row=>(scope==='all'||scope==='promissory'&&isPromissory(row)||scope==='due'&&dateInput(row.values[16])<=day)&&(!query||[row.values[1],row.values[2],row.values[3],recordMobile(row)].join(' ').toLowerCase().includes(query.toLowerCase())));
+ return <details className="due-contacts panel screen"><summary>Due contacts · {due.length} due today / past date</summary><div className="due-contact-controls"><input type="search" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search name or mobile" aria-label="Search due contacts"/><select value={scope} onChange={e=>setScope(e.target.value)} aria-label="Contact date filter"><option value="due">Due today / past date</option><option value="all">All payment / renewal dates</option><option value="promissory">Promissory notes</option></select></div><div className="scroll"><table><thead><tr><th>Informant</th><th>Cemetery / type</th><th>Date</th><th>Balance / promise</th><th>Mobile number</th><th>Record</th></tr></thead><tbody>{selected.map(row=><tr key={row.id}><td>{cleanText(row.values[3])}</td><td>{cleanText(row.values[15])} · {isPromissory(row)?'PROMISSORY':cleanText(row.values[5])}</td><td>{dateText(row.values[16],true)}{dateInput(row.values[16])<day?' · Past date':dateInput(row.values[16])===day?' · Today':''}</td><td>₱ {money(row.values[19])}</td><td><MobileContact number={recordMobile(row)}/></td><td><button className="secondary" onClick={()=>onOpen(row)}>{recordMobile(row)?'Open':'Add mobile'}</button></td></tr>)}</tbody></table>{!selected.length&&<p>No matching dates.</p>}</div><small>Past dates are follow-up dates; review the record to confirm payment status.</small></details>;
+}

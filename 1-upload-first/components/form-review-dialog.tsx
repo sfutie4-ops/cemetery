@@ -1,0 +1,16 @@
+'use client';
+import {AlertCircle,CheckCircle2,Printer,Send,FileCheck2} from 'lucide-react';
+import {Dialog,DialogContent,DialogHeader,DialogTitle} from './ui/dialog';
+import type {ReviewIssue} from '../lib/form-review';
+export type ReviewIntent={kind:'print'|'transfer';form:string;returnToTransfer?:boolean};
+export default function FormReviewDialog({intent,title,issues,filled,total,busy,onClose,onReview,onPrint,onTransfer,notice,onRestoreFocus}:{intent:ReviewIntent|null;title:string;issues:ReviewIssue[];filled:number;total:number;busy:boolean;onClose:()=>void;onReview:(ref?:string)=>void;onPrint:()=>void;onTransfer:()=>void;notice:string;onRestoreFocus:()=>boolean}){
+ const transfer=intent?.kind==='transfer';
+ return <Dialog open={!!intent} onOpenChange={open=>{if(!open&&!busy)onClose()}}><DialogContent className="form-review-modal" overlayClassName="review-backdrop" aria-describedby="form-review-description" showCloseButton={!busy} onCloseAutoFocus={event=>{if(onRestoreFocus())event.preventDefault()}}><DialogHeader><div className={'review-emblem '+(issues.length?'needs-review':'')} aria-hidden="true">{issues.length?<AlertCircle size={25}/>:<FileCheck2 size={25}/>}</div><DialogTitle>{transfer?'Print before transferring?':'Review before printing'}</DialogTitle></DialogHeader><p id="form-review-description">{transfer?'Are you sure you want to clear out the form data and transfer it to transmittal, or print it first?':'Please check the names, dates, amounts, and permit preview before you confirm printing.'}</p>
+ <div className="review-document"><strong>{title}</strong><span>{filled} / {total} input boxes have data</span></div>
+ {issues.length?<section className="review-issues"><div><AlertCircle size={16}/><strong>{issues.length} detail{issues.length===1?'':'s'} to review</strong></div><p>Highlighted boxes may need information. Optional boxes can stay empty.</p><div className="review-issue-chips">{issues.map(issue=><button className="secondary" disabled={busy} key={issue.ref} onClick={()=>onReview(issue.ref)}>{issue.label}{issue.blocking&&<span className="sr-only"> · needed for transfer</span>}</button>)}</div></section>:<p className="review-ready"><CheckCircle2 size={16}/>Key details are filled. Check the preview for accuracy.</p>}
+ {transfer&&<p className="review-clear-note">Transfer saves this entry online and clears the current input form only after it succeeds.</p>}
+ {notice&&<p className="settings-notice" role="status">{notice}</p>}
+ <div className="review-actions"><button className="primary review-print" autoFocus disabled={busy} onClick={onPrint}><Printer size={20}/>{transfer?'Print':issues.length?'Print anyway':'Confirm print'}</button><div><button className="review-link" disabled={busy} onClick={()=>onReview()}>Review first</button>{transfer?<button className="secondary review-transfer" disabled={busy||issues.some(issue=>issue.blocking)} onClick={onTransfer}><Send size={13}/>Transfer</button>:<button className="secondary review-transfer" disabled={busy} onClick={onClose}>Cancel</button>}</div></div>
+ {transfer&&issues.some(issue=>issue.blocking)&&<small className="review-blocking">Complete the required highlighted details before transferring.</small>}
+ </DialogContent></Dialog>;
+}
