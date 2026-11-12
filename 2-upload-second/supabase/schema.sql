@@ -1,0 +1,28 @@
+BEGIN;
+CREATE SCHEMA IF NOT EXISTS cemetery;
+REVOKE ALL ON SCHEMA cemetery FROM PUBLIC,anon,authenticated;
+SET LOCAL search_path TO cemetery,pg_catalog;
+CREATE TABLE IF NOT EXISTS drafts(name text PRIMARY KEY,fields text NOT NULL,updated_at text NOT NULL,revision integer NOT NULL DEFAULT 0);
+CREATE TABLE IF NOT EXISTS records(id text PRIMARY KEY,sheet text NOT NULL,number integer NOT NULL,payload text NOT NULL,created_at text NOT NULL,token text NOT NULL UNIQUE,UNIQUE(sheet,number));
+CREATE TABLE IF NOT EXISTS record_deletions(record_id text PRIMARY KEY,deleted_at text NOT NULL);
+CREATE TABLE IF NOT EXISTS admin_users(username text PRIMARY KEY,name text NOT NULL,salt text NOT NULL,hash text NOT NULL,revision integer NOT NULL DEFAULT 1);
+CREATE TABLE IF NOT EXISTS admin_sessions(token_hash text PRIMARY KEY,username text NOT NULL,revision integer NOT NULL,expires_at bigint NOT NULL);
+CREATE INDEX IF NOT EXISTS admin_sessions_expiry ON admin_sessions(expires_at);
+CREATE TABLE IF NOT EXISTS edit_attempts(client text PRIMARY KEY,failures integer NOT NULL,started_at bigint NOT NULL);
+CREATE TABLE IF NOT EXISTS site_comments(id text PRIMARY KEY,author text NOT NULL,message text NOT NULL,page text NOT NULL,created_at text NOT NULL);
+CREATE TABLE IF NOT EXISTS comment_anchors(comment_id text PRIMARY KEY,anchor text NOT NULL);
+CREATE TABLE IF NOT EXISTS comment_deletions(comment_id text PRIMARY KEY,deleted_at text NOT NULL);
+CREATE TABLE IF NOT EXISTS attachment_files(id text PRIMARY KEY,name text NOT NULL,type text NOT NULL,category text NOT NULL,size integer NOT NULL,uploaded_at text NOT NULL);
+REVOKE ALL ON ALL TABLES IN SCHEMA cemetery FROM PUBLIC,anon,authenticated;
+ALTER TABLE drafts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE records ENABLE ROW LEVEL SECURITY;
+ALTER TABLE record_deletions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE admin_users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE admin_sessions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE edit_attempts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE site_comments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE comment_anchors ENABLE ROW LEVEL SECURITY;
+ALTER TABLE comment_deletions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE attachment_files ENABLE ROW LEVEL SECURITY;
+-- No public API policies: access is through the application's authenticated server routes.
+COMMIT;

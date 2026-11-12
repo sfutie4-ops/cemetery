@@ -1,0 +1,31 @@
+import type {ReviewIssue} from './form-review';
+export const helperVerses=[
+ {ref:'Matthew 11:28',text:'Come unto me, all ye that labour and are heavy laden, and I will give you rest.'},
+ {ref:'Proverbs 3:5',text:'Trust in the Lord with all thine heart; and lean not unto thine own understanding.'},
+ {ref:'Psalm 46:10',text:'Be still, and know that I am God: I will be exalted among the heathen, I will be exalted in the earth.'},
+ {ref:'Proverbs 16:3',text:'Commit thy works unto the Lord, and thy thoughts shall be established.'},
+ {ref:'John 14:27',text:'Peace I leave with you, my peace I give unto you: not as the world giveth, give I unto you. Let not your heart be troubled, neither let it be afraid.'},
+ {ref:'Psalm 50:15',text:'And call upon me in the day of trouble: I will deliver thee, and thou shalt glorify me.'},
+];
+export type HelperContext={page:string;admin:boolean;issues?:ReviewIssue[];amount?:string};
+export function helperAnswer(question:string,context:HelperContext){
+ const q=question.toLowerCase().replace(/[^a-z0-9\s]/g,' ');
+ if(/\b(missing|empty|blank|incomplete|review|filled)\b/.test(q))return context.issues?context.issues.length?'On '+context.page+', review: '+context.issues.map(issue=>issue.label).join(', ')+'. Amber marks show details to check; green marks show boxes with data. Optional boxes can stay empty.':'The key details on '+context.page+' are filled. Check the preview before printing.':'Open a permit or Statement of Account to check the input boxes. Green means data is present; amber means a detail needs review.';
+ if(/\b(total|payable|amount)\b/.test(q)&&context.amount!==undefined)return 'The current total amount payable on '+context.page+' is ₱ '+context.amount+'. It updates from the encoded amounts. Check the preview before printing or transferring.';
+ if(context.page==='Transfer of remains'&&/\b(cemetery|cemeteries|route|routing|destination|address|sitio)\b/.test(q))return 'Type the From cemetery and To cemetery exactly as they should appear on the permit, including the location if needed. The separate Transmittal cemetery dropdown chooses Municipal or Aranda for the saved payment. Address / location uses what you type; add “Sitio” yourself when needed.';
+ if(/\b(print|printing|pdf|paper|letter)\b/.test(q))return 'Use Print, review the details, then Confirm print or Print anyway. The print view uses Letter paper (8.5 × 11 inches). Choose Print / Save PDF there. Printing keeps the form data. If the print window is blocked, allow pop-ups for this website.';
+ if(/\b(transfer|transmittal|transmital|clear|clears|clearing)\b/.test(q))return (context.admin?'As Admin, you can transfer.':'Log in as Admin to transfer. Guests cannot open or change transmittals.')+' Transfer to transmittal opens a print-first warning. Print or review first, then choose Transfer. The entry is saved online before its input form clears. Saved entries can be edited or viewed in the matching Municipal or Aranda transmittal.';
+ if(/\b(advance|2026|2028|250|500)\b/.test(q))return 'Statement of Account starts from 2026. Advance until year = 2026 + advance years. Niche uses ₱250 per advance year; Perpetual uses ₱500. Two advance years end in 2028 and add ₱500 for Niche or ₱1,000 for Perpetual.';
+ if(/\b(arrears|rental|rentals|rent)\b/.test(q))return 'Encode the arrears amount and the applicable years. For a burial permit, add the arrears name when there is an arrears amount. The preview shows Add Arrears with the amount and the corresponding name. Review the final total before printing.';
+ if(/\b(excel|copy|paste|csv|spreadsheet|cells|edit|insert|numbering|colors)\b/.test(q))return 'Admins can edit cells or Insert row, then Save changes. New rows need a name, payment type and payment date. The O.R. and Delete buttons stay beside the number; deleting asks for confirmation. Visible numbers run from 1 in print and Excel. Yellow is Burial, blue Statement, red Transfer and green Exhumation. Totals are below the rows. Copy for Excel uses the original 20 columns and preserves O.R. leading zeros.';
+ if(/\b(clerk|gena|genafer|marv|marvin|login|admin|guest|account|password)\b/.test(q))return 'Use the account button to log in as Admin or continue as Guest. Gena selects GENAFER DELA CRUZ; Marv selects MARVIN MIRALLES as the Statement clerk. Both names are also in the Clerk dropdown. Guests can encode and print forms, but cannot transfer or access transmittal records.';
+ if(/\b(receipt|or number|o r|receipt number)\b/.test(q))return 'Encode the O.R. number in the form before transfer when available. If it is pending, the transmittal reminds Admins to add it through Edit or Edit cells. Leading zeros are retained when using Copy for Excel.';
+ if(/\b(theme|dark|light|christmas|halloween|animation|settings)\b/.test(q))return 'Open Settings for Light, Dark or System mode, theme colors, Halloween and Christmas, and the Animations switch. Appearance is saved on this device. Printed documents remain white with black text.';
+ if(/\b(comment|pin|pins|hover|note)\b/.test(q))return 'Click Comment, then choose a spot and post your note. Hover or tap a numbered pin to read it; clicking keeps it open. Saved comments are available to Admins, and guests can see new comments from their current visit. Comments never print.';
+ if(/\b(summary|dashboard|daily|report|municipal|aranda|collection)\b/.test(q))return 'Dashboard is the overview. Use the cemetery filter for Municipal, Aranda or both. Reports opens Daily Collection; choose a month and use Separate tables for each cemetery. Compact view reduces the amount of scrolling.';
+ if(/\b(move|drag|pumpkin|pip|helper)\b/.test(q))return 'Drag my pumpkin to a clear spot on the screen. On a keyboard, focus me and use the arrow keys to move. Click me for a Bible verse, or type a question about this website below.';
+ return 'I can guide you through this website: form review, printing, transfers, arrears, advance payments, Excel, accounts, reports, themes and comments. Try “What is missing?” or “How do I print?”';
+}
+export function helperBounds(x:number,y:number,width:number,height:number,size=60){
+ return {x:Math.max(8,Math.min(Number.isFinite(x)?x:width-size-12,Math.max(8,width-size-8))),y:Math.max(8,Math.min(Number.isFinite(y)?y:height-size-12,Math.max(8,height-size-8)))};
+}
