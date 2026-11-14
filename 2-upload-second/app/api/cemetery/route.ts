@@ -30,8 +30,7 @@ export async function GET(request:Request) {
     const url=new URL(request.url),year=Number(url.searchParams.get('year')??2026),month=url.searchParams.get('month')??today().slice(0,7),scope=(url.searchParams.get('scope')??'all') as CemeteryScope;
     if(!Number.isInteger(year)||year<2000||year>2100||!/^\d{4}-(0[1-9]|1[0-2])$/.test(month)||Number(month.slice(0,4))<2000||Number(month.slice(0,4))>2100||!['all','municipal','aranda'].includes(scope))return json({error:'Invalid report filters.'},400);
     const accessRequest=editStatus(request),db = database();
-    const recordsRequest=seed(db).then(()=>db.prepare('SELECT * FROM records WHERE NOT EXISTS (SELECT 1 FROM record_deletions WHERE record_id=records.id) ORDER BY sheet,number').all());
-    const [access,drafts,records] = await Promise.all([accessRequest,db.prepare('SELECT * FROM drafts').all(),recordsRequest]);
+    const [access,[drafts,records]] = await Promise.all([accessRequest,db.batch([db.prepare('SELECT * FROM drafts'),db.prepare('SELECT * FROM records WHERE NOT EXISTS (SELECT 1 FROM record_deletions WHERE record_id=records.id) ORDER BY sheet,number')])]);
     return json({drafts: Object.fromEntries(drafts.results.map((row: any) => [row.name, {
       fields: JSON.parse(row.fields), updatedAt: row.updated_at, revision: row.revision,
     }])), records: access.canViewTransmittal?records.results.map(storedRecord):[],recordsAccessible:access.canViewTransmittal,...(!access.canViewTransmittal?{publicReports:publicReports(records.results.map(storedRecord),{year,month,scope})}:{})});

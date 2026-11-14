@@ -6,7 +6,7 @@ function pool() {
   if (!url) throw new Error('Database connection is not configured.');
   return connection ??= postgres(url, {
     max: 2, prepare: false, ssl: 'verify-full',
-    idle_timeout: 20, connect_timeout: 15,
+    idle_timeout: 60, connect_timeout: 15,
   });
 }
 
@@ -20,6 +20,18 @@ export class Statement {
 
 async function execute(statements: Statement[]): Promise<{results: any[]; meta: {changes: number}}[]> {
   return pool().begin(async tx => {
+    if (statements.every(s => /^\s*SELECT\b/i.test(s.query))) {
+      // Read-only batches are sent together in one network trip instead of one trip per query.
+      const pending: Promise<any>[] = [tx.unsafe('SET LOCAL search_path TO cemetery, pg_catalog')];
+      for (const statement of statements) {
+        let index = 0;
+        const query = statement.query.replace(/\?/g, () => '$' + ++index);
+        if (index !== statement.parameters.length) throw new Error('Invalid database parameters.');
+        pending.push(tx.unsafe(query, statement.parameters));
+      }
+      const [, ...sets] = await Promise.all(pending);
+      return sets.map((rows: any) => ({results: [...rows], meta: {changes: rows.count}}));
+    }
     await tx.unsafe('SET LOCAL search_path TO cemetery, pg_catalog');
     if (statements.some(s => !/^\s*SELECT\b/i.test(s.query))) {
       // A transaction-scoped lock serializes numbering and atomic form transfers.
