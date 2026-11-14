@@ -1,6 +1,6 @@
 import {editStatus,sameOrigin} from '../../../lib/edit-access';
 import {database} from '../../../lib/storage';
-import {formNames, transfer, clearFields, today, cleanText, mobileText, statementYear, type Fields} from '../../../lib/model';
+import {formNames, transfer, clearFields, today, cleanText, mobileText, type Fields} from '../../../lib/model';
 
 import {promissorySheet,promissoryRecord,promissoryFields,isPromissory,refreshPromissoryText} from '../../../lib/promissory';
 import {publicReports} from '../../../lib/public-reports';
@@ -53,7 +53,6 @@ export async function POST(request: Request) {
       return json({error: 'Invalid form or revision.'}, 400);
     if (body.action === 'save') {
       const fields = validate(body.fields);
-      if(body.name==='STATEMENT')fields.P9=statementYear;
       const row = await db.prepare(`INSERT INTO drafts(name,fields,updated_at,revision) VALUES(?,?,?,1)
         ON CONFLICT(name) DO UPDATE SET fields=excluded.fields,updated_at=excluded.updated_at,revision=drafts.revision+1
         WHERE drafts.revision=? RETURNING revision`).bind(body.name, JSON.stringify(fields), at, body.revision).first();
