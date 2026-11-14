@@ -123,3 +123,94 @@
 @keyframes review-ok{0%{transform:scale(.3) rotate(-25deg)}60%{transform:scale(1.15) rotate(6deg)}100%{transform:none}}
 @keyframes chip-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @media(prefers-reduced-motion:reduce){.form-review-modal,.shell,.review-emblem,.review-emblem::after,.review-issue-chips button,.field :is(input,select,textarea){animation:none!important}}
+
+/* Twilight lights: fireflies in the sidebar, drifting light on the dashboard, livelier hover. */
+@media screen{
+ /* Sidebar fireflies */
+ .shell>aside::before,.shell>aside::after{content:'';position:absolute;z-index:1;left:0;top:0;width:3px;height:3px;border-radius:50%;pointer-events:none;background:#ffe9a8;color:#ffe9a8;
+  box-shadow:0 0 6px 2px #ffd97a99,58px 120px 0 0,58px 120px 6px 2px #ffd97a88,150px 260px 0 0,150px 260px 7px 2px #ffd97a88,34px 430px 0 -0.5px,34px 430px 6px 1px #ffd97a77,170px 560px 0 0,170px 560px 6px 2px #ffd97a88;
+  animation:firefly-a 19s ease-in-out infinite,firefly-flicker 3.7s ease-in-out infinite}
+ .shell>aside::before{translate:22px 70px}
+ .shell>aside::after{translate:96px 190px;background:#e6d4ff;color:#e6d4ff;
+  box-shadow:0 0 6px 2px #c9a8ff99,-60px 150px 0 0,-60px 150px 6px 2px #c9a8ff88,70px 300px 0 0,70px 300px 7px 2px #c9a8ff88,-20px 420px 0 0,-20px 420px 6px 2px #c9a8ff77;
+  animation:firefly-b 24s ease-in-out infinite,firefly-flicker 5.1s -2s ease-in-out infinite}
+ /* Brand: breathing halo ring and a slow shine across the name */
+ .brand-emblem::after{animation:halo-breathe 5s ease-in-out infinite}
+ .brand-name{background:linear-gradient(100deg,#fff 0 40%,#ffe6b0 50%,#fff 60% 100%) 0 0/300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:name-shine 9s ease-in-out infinite}
+ /* Menu: light sweeps across the current page; icons react to hover */
+ .reference-nav button.active{overflow:hidden}
+ .reference-nav button.active::before{content:'';position:absolute;inset:0 auto 0 0;width:45%;z-index:-1;background:linear-gradient(100deg,transparent,rgb(255 255 255 / .22),transparent);transform:translateX(-120%) skewX(-18deg);animation:nav-sweep 6s ease-in-out infinite;pointer-events:none}
+ .reference-nav button:hover:not(:disabled)>svg{animation:icon-wiggle .5s ease-in-out}
+ .reference-nav button:not(.active):hover:not(:disabled){box-shadow:inset 2px 0 #ffd97a,0 0 18px rgb(255 217 122 / .12)}
+ .reference-footer{overflow:hidden}
+ .reference-footer::before{content:'';position:absolute;inset:0 0 auto;height:2px;background:linear-gradient(90deg,transparent,#ffd97a,transparent) no-repeat -60% 0/40% 100%;animation:edge-light 7s linear infinite}
+ .reference-footer>svg{animation:soft-float 5s ease-in-out infinite}
+ .sidebar-art::after{content:'';position:absolute;left:38%;top:52%;width:26px;height:34px;border-radius:50%;background:radial-gradient(closest-side,rgb(255 196 120 / .75),transparent);animation:candle 3.1s ease-in-out infinite;pointer-events:none}
+
+ /* Page title icon: floating with a turning rim of light */
+ .reference-toolbar .title-icon{animation:soft-float 6s ease-in-out infinite}
+ .reference-toolbar .title-icon::before{content:'';position:absolute;inset:-2px;border-radius:inherit;padding:2px;background:conic-gradient(from var(--spin,0deg),transparent 0 70%,var(--accent) 85%,#ffd97a 92%,transparent 100%);-webkit-mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);animation:rim-spin 6s linear infinite;pointer-events:none}
+
+ /* Dashboard cards */
+ .report .kpi{overflow:hidden}
+ .report .kpi::after{content:'';position:absolute;inset:0;border-radius:inherit;background:radial-gradient(180px circle at var(--mx,85%) -20%,color-mix(in srgb,var(--accent) 16%,transparent),transparent 70%);opacity:0;transition:opacity .3s ease;pointer-events:none}
+ .report .kpi:hover::after{opacity:1}
+ .report .kpi:hover{border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+ .report .kpi .kpi-icon{animation:soft-float 5s ease-in-out infinite}
+ .report .kpi:nth-child(2) .kpi-icon{animation-delay:-.8s}.report .kpi:nth-child(3) .kpi-icon{animation-delay:-1.6s}.report .kpi:nth-child(4) .kpi-icon{animation-delay:-2.4s}.report .kpi:nth-child(5) .kpi-icon{animation-delay:-3.2s}.report .kpi:nth-child(n+6) .kpi-icon{animation-delay:-4s}
+ .report .kpi:hover .kpi-icon svg{animation:icon-pop .5s var(--arrive)}
+ /* Featured total: slow aurora, a drifting orb of light and a passing sheen */
+ .report .kpi.featured{background:linear-gradient(115deg,var(--accent-deep),color-mix(in srgb,var(--accent) 70%,#e2559b) 45%,color-mix(in srgb,var(--accent-deep) 75%,#1b1030)) 0 50%/260% 260%;animation:summary-arrive .38s var(--ease-out,ease-out) backwards,aurora 14s ease-in-out infinite alternate}
+ .report .kpi.featured::before{content:'';position:absolute;right:-30px;top:-40px;width:150px;height:150px;border-radius:50%;background:radial-gradient(closest-side,rgb(255 214 150 / .38),transparent);animation:orb-drift 11s ease-in-out infinite alternate;pointer-events:none}
+ .report .kpi.featured::after{opacity:1;background:linear-gradient(100deg,transparent 40%,rgb(255 255 255 / .2) 50%,transparent 60%) no-repeat -150% 0/60% 100%;animation:sheen-pass 7s ease-in-out infinite}
+ /* Panels: a light travels along the top edge; icons breathe */
+ .dashboard-overview .panel{position:relative}
+ .dashboard-overview .panel::before{content:'';position:absolute;inset:0 12px auto;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,var(--accent),#ffd97a,transparent) no-repeat -60% 0/35% 100%;opacity:.75;animation:edge-light 8s linear infinite;pointer-events:none}
+ .dashboard-overview .dashboard-side .panel::before{animation-delay:-3s}.dashboard-overview .panel:nth-of-type(2n)::before{animation-delay:-5s}
+ .dashboard-overview .panel{transition:box-shadow .25s ease,border-color .25s ease,transform .25s ease}
+ .section-icon{animation:icon-glow 4s ease-in-out infinite}
+ /* Chart: bars lift and glow on hover, points twinkle */
+ .summary-svg g:hover .chart-column{filter:brightness(1.18) drop-shadow(0 0 6px color-mix(in srgb,var(--accent) 60%,transparent))}
+ .transaction-point{transform-box:fill-box;transform-origin:center;animation:point-twinkle 2.8s ease-in-out infinite}
+ .summary-svg g:nth-of-type(2n) .transaction-point{animation-delay:-.9s}.summary-svg g:nth-of-type(3n) .transaction-point{animation-delay:-1.8s}
+ .collection-rows>div,.quality-rows>div{transition:background .18s ease,padding-left .18s ease,box-shadow .18s ease}
+ /* Live preview: the page sits under soft moving light and lifts on hover */
+ .paper{background-image:radial-gradient(420px circle at 20% 0%,color-mix(in srgb,var(--accent) 12%,transparent),transparent 70%),radial-gradient(360px circle at 90% 100%,rgb(255 217 122 / .14),transparent 70%);background-size:200% 200%;animation:paper-light 16s ease-in-out infinite alternate}
+ .paper-page{transition:transform .3s var(--arrive),box-shadow .3s ease}
+ .preview-title svg{animation:icon-glow 4s ease-in-out infinite}
+ .form-heading{position:relative;overflow:hidden}
+ .form-heading::after{content:'';position:absolute;inset:0;background:linear-gradient(100deg,transparent 40%,rgb(255 255 255 / .16) 50%,transparent 60%) no-repeat -150% 0/50% 100%;animation:sheen-pass 9s ease-in-out infinite;pointer-events:none}
+
+ [data-page-hidden=true] :is(.shell>aside,.brand-emblem,.reference-nav button.active,.reference-footer,.sidebar-art,.title-icon,.report .kpi.featured,.dashboard-overview .panel,.form-heading)::before,[data-page-hidden=true] :is(.shell>aside,.brand-emblem,.sidebar-art,.report .kpi.featured,.form-heading)::after,[data-page-hidden=true] :is(.brand-name,.title-icon,.kpi-icon,.section-icon,.transaction-point,.paper,.report .kpi.featured,.reference-footer>svg,.preview-title svg){animation-play-state:paused}
+ [data-motion=off] .brand-name{color:#fff;background:none}
+}
+@media screen and (hover:hover) and (pointer:fine){
+ .dashboard-overview .panel:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--accent) 30%,var(--line));box-shadow:0 10px 30px color-mix(in srgb,var(--accent) 12%,transparent)}
+ .collection-rows>div:hover,.quality-rows>div:hover{background:var(--accent-soft);padding-left:8px;box-shadow:inset 3px 0 var(--accent)}
+ .document:hover .paper-page{transform:translateY(-3px) scale(1.004);box-shadow:0 3px 6px rgb(20 25 45 / .14),0 18px 40px color-mix(in srgb,var(--accent) 22%,transparent)}
+}
+@media screen and (max-width:1000px){
+ .shell>aside{position:relative;overflow:hidden}
+ .shell>aside::before{display:none}
+ .shell>aside::after{translate:none;inset:auto 0 0;width:auto;height:2px;border-radius:0;box-shadow:none;background:linear-gradient(90deg,transparent,#ffd97a,#e6d4ff,transparent) no-repeat -60% 0/40% 100%;animation:edge-light 6s linear infinite}
+}
+@property --spin{syntax:'<angle>';inherits:false;initial-value:0deg}
+@keyframes firefly-a{0%,100%{transform:translate(0,0)}25%{transform:translate(18px,-26px)}50%{transform:translate(-8px,-44px)}75%{transform:translate(-20px,-14px)}}
+@keyframes firefly-b{0%,100%{transform:translate(0,0)}30%{transform:translate(-22px,20px)}60%{transform:translate(14px,36px)}80%{transform:translate(24px,8px)}}
+@keyframes firefly-flicker{0%,100%{opacity:.15}20%{opacity:.95}45%{opacity:.4}70%{opacity:1}85%{opacity:.25}}
+@keyframes halo-breathe{0%,100%{scale:1;opacity:.6}50%{scale:1.14;opacity:1;border-color:rgb(255 217 122 / .45)}}
+@keyframes name-shine{0%,55%{background-position:100% 0}85%,100%{background-position:0 0}}
+@keyframes nav-sweep{0%,60%{transform:translateX(-120%) skewX(-18deg)}90%,100%{transform:translateX(320%) skewX(-18deg)}}
+@keyframes icon-wiggle{0%,100%{rotate:0deg}25%{rotate:-12deg}60%{rotate:9deg}}
+@keyframes icon-pop{0%{scale:1}45%{scale:1.3;rotate:-8deg}100%{scale:1}}
+@keyframes edge-light{from{background-position:-60% 0}to{background-position:160% 0}}
+@keyframes soft-float{0%,100%{translate:0 0}50%{translate:0 -3px}}
+@keyframes candle{0%,100%{opacity:.5;transform:scale(.9)}35%{opacity:1;transform:scale(1.1)}60%{opacity:.65;transform:scale(.96)}80%{opacity:.95;transform:scale(1.06)}}
+@keyframes rim-spin{to{--spin:360deg}}
+@keyframes aurora{from{background-position:0 50%}to{background-position:100% 50%}}
+@keyframes orb-drift{from{transform:translate(0,0) scale(1)}to{transform:translate(-90px,34px) scale(1.25)}}
+@keyframes sheen-pass{0%,65%{background-position:-150% 0}100%{background-position:260% 0}}
+@keyframes icon-glow{0%,100%{filter:none}50%{filter:drop-shadow(0 0 5px color-mix(in srgb,var(--accent) 65%,transparent))}}
+@keyframes point-twinkle{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.5);opacity:1}}
+@keyframes paper-light{from{background-position:0 0}to{background-position:100% 100%}}
+@media(prefers-reduced-motion:reduce){:is(.shell>aside,.brand-emblem,.reference-nav button.active,.reference-footer,.sidebar-art,.title-icon,.report .kpi.featured,.dashboard-overview .panel,.form-heading)::before,:is(.shell>aside,.brand-emblem,.sidebar-art,.report .kpi.featured,.form-heading)::after,.brand-name,.title-icon,.kpi-icon,.section-icon,.transaction-point,.paper,.report .kpi.featured,.reference-footer>svg,.preview-title svg{animation:none!important}.brand-name{color:#fff;background:none}}
