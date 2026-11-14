@@ -74,3 +74,52 @@
 @keyframes ghost-shadow{0%,100%{transform:scaleX(1);opacity:1}50%{transform:scaleX(.8);opacity:.6}}
 @keyframes ghost-twinkle{0%,100%{opacity:0;transform:scale(.3) rotate(0)}50%{opacity:1;transform:scale(1.5) rotate(90deg)}}
 @media(prefers-reduced-motion:reduce){.access-backdrop::before,.access-choice,.access-choice .access-lock,.access-choice .access-lock::before,.access-choice .access-lock::after,.reference-brand,.reference-nav>button,.toolbar-title,.form-panel,.document,.log-panel,.transmittal-access,.receipt-floater::before,.receipt-floater::after,.receipt-ghost-appearance,.receipt-ghost-art,.receipt-floater-bar,.receipt-ghost-content{animation:none!important}.shell{transition:none}}
+
+/* Form guidance: each kind of box has its own colour, filled boxes are tinted, empty boxes stay plain. */
+@media screen{
+ .field{--kind:var(--muted)}
+ .field[data-field-kind=name]{--kind:#7a3fc0}.field[data-field-kind=place]{--kind:#0f8a8a}.field[data-field-kind=date]{--kind:#c9357a}.field[data-field-kind=amount]{--kind:#1f8f63}.field[data-field-kind=receipt]{--kind:#2a6fd6}
+ [data-theme=dark] .field[data-field-kind=name]{--kind:#c3a2f5}[data-theme=dark] .field[data-field-kind=place]{--kind:#6fd3d0}[data-theme=dark] .field[data-field-kind=date]{--kind:#f58bbb}[data-theme=dark] .field[data-field-kind=amount]{--kind:#7ed9ae}[data-theme=dark] .field[data-field-kind=receipt]{--kind:#8fb8ff}
+ .field[data-field-kind]>span{color:color-mix(in srgb,var(--kind) 72%,var(--ink))}
+ .field[data-field-kind]>.field-input>svg{color:var(--kind);opacity:1}
+ .field[data-field-kind] :is(input:not([type=checkbox]),select,textarea){border-left:3px solid color-mix(in srgb,var(--kind) 55%,var(--line))}
+ .field[data-field-state=filled] :is(input:not([type=checkbox]),select,textarea){background:color-mix(in srgb,var(--kind) 9%,var(--control));border-color:color-mix(in srgb,var(--kind) 38%,var(--line));border-left-color:var(--kind);font-weight:600}
+ .field[data-field-state=empty] :is(input:not([type=checkbox]),select,textarea){background:var(--control)}
+ .field[data-field-state=missing] :is(input:not([type=checkbox]),select,textarea){border-color:#db9827;border-left-color:#db9827;background:color-mix(in srgb,var(--control) 86%,#f2b23e);box-shadow:0 0 0 3px #db98272e;animation:missing-pulse 1.6s ease-in-out 3}
+ .field[data-field-state=missing]>span{color:#a9690a;font-weight:700}[data-theme=dark] .field[data-field-state=missing]>span{color:#f3c476}
+ .field :is(input,textarea)::placeholder{color:var(--muted);opacity:.62;font-weight:400;font-size:.8em;font-style:normal}
+ .field.field-notes textarea{min-height:58px;height:auto;resize:vertical}
+
+ /* Review pop-up: shakes and turns amber when details are missing, pops green when everything is OK. */
+ .form-review-modal{border-top:6px solid var(--accent)!important}
+ .form-review-modal [data-slot=dialog-title]{font-family:var(--font-inscription);font-weight:400;font-size:24px;letter-spacing:.2px}
+ .form-review-modal .review-emblem{width:56px;height:56px;border-radius:50%;position:relative}
+ .form-review-modal:has(.review-issues){border-top-color:#db9827!important}
+ .form-review-modal:has(.review-ready){border-top-color:#239b77!important}
+ .form-review-modal[data-state=open]:has(.review-issues){animation:review-shake .6s cubic-bezier(.36,.07,.19,.97) both!important}
+ .form-review-modal[data-state=open]:has(.review-ready){animation:review-pop .5s var(--arrive) both!important}
+ body:has(.form-review-modal[data-state=open] .review-issues) .shell{animation:screen-shake .5s cubic-bezier(.36,.07,.19,.97)}
+ .form-review-modal:has(.review-issues) .review-emblem{background:#fbe9c7;color:#b06f08}
+ .form-review-modal:has(.review-issues) .review-emblem::after{content:'';position:absolute;inset:-5px;border-radius:50%;border:2px solid #db9827;animation:review-ring 1.5s ease-out infinite}
+ .form-review-modal:has(.review-ready) .review-emblem{background:#d9f3e8;color:#17805f;animation:review-ok .6s .15s var(--arrive) both}
+ .review-issues{border-width:2px;border-color:#db9827;background:color-mix(in srgb,var(--surface) 90%,#f2b23e);padding:13px}
+ .review-issues>div:first-child{font-size:15px;color:#8f5b08}.review-issues>div:first-child svg{width:19px;height:19px}
+ .review-issues p{font-size:12px!important}
+ .review-issue-chips{gap:7px}
+ .review-issue-chips button{font-size:13px;font-weight:600;padding:8px 11px;min-height:36px;border-color:#db9827;background:var(--surface);animation:chip-in .35s var(--arrive) backwards}
+ .review-issue-chips button:nth-child(2){animation-delay:.05s}.review-issue-chips button:nth-child(3){animation-delay:.1s}.review-issue-chips button:nth-child(4){animation-delay:.15s}.review-issue-chips button:nth-child(n+5){animation-delay:.2s}
+ .review-issue-chips button::before{content:'';width:7px;height:7px;border-radius:50%;background:#db9827;flex-shrink:0}
+ .form-review-modal .review-ready{font-size:14px;font-weight:600;color:#17805f;background:#e2f5ec;border:2px solid #7fcfae;border-radius:11px;padding:12px 13px}
+ .form-review-modal .review-ready svg{width:20px;height:20px}
+ [data-theme=dark] .form-review-modal .review-ready{background:#1d3d33;color:#a6e0ce;border-color:#2f6b57}
+ [data-theme=dark] .review-issues>div:first-child{color:#f3c476}[data-theme=dark] .form-review-modal:has(.review-issues) .review-emblem{background:#4a3a1c;color:#f3c476}[data-theme=dark] .form-review-modal:has(.review-ready) .review-emblem{background:#1d3d33;color:#a6e0ce}
+ [data-motion=off] .form-review-modal,[data-motion=off] .shell,[data-motion=off] .review-emblem,[data-motion=off] .review-emblem::after,[data-motion=off] .review-issue-chips button,[data-motion=off] .field :is(input,select,textarea){animation:none!important}
+}
+@keyframes missing-pulse{0%,100%{box-shadow:0 0 0 3px #db98272e}50%{box-shadow:0 0 0 6px #db982755}}
+@keyframes review-shake{0%{opacity:0;transform:scale(.94)}12%{opacity:1;transform:scale(1) translateX(-12px) rotate(-1deg)}24%{transform:translateX(11px) rotate(1deg)}36%{transform:translateX(-9px) rotate(-.7deg)}48%{transform:translateX(7px) rotate(.5deg)}60%{transform:translateX(-5px)}72%{transform:translateX(3px)}84%{transform:translateX(-2px)}100%{opacity:1;transform:none}}
+@keyframes screen-shake{0%,100%{transform:none}15%{transform:translate(-6px,2px)}30%{transform:translate(5px,-2px)}45%{transform:translate(-4px,1px)}60%{transform:translate(3px,-1px)}75%{transform:translate(-2px,0)}90%{transform:translate(1px,0)}}
+@keyframes review-pop{0%{opacity:0;transform:translateY(18px) scale(.9)}60%{opacity:1;transform:translateY(-3px) scale(1.02)}100%{opacity:1;transform:none}}
+@keyframes review-ring{from{opacity:.9;transform:scale(.9)}to{opacity:0;transform:scale(1.45)}}
+@keyframes review-ok{0%{transform:scale(.3) rotate(-25deg)}60%{transform:scale(1.15) rotate(6deg)}100%{transform:none}}
+@keyframes chip-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.form-review-modal,.shell,.review-emblem,.review-emblem::after,.review-issue-chips button,.field :is(input,select,textarea){animation:none!important}}
