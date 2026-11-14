@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
+import { Marcellus } from "next/font/google";
 import "./globals.css";
 import "./visual-polish.css";
 import "./form-guidance.css";
 import "./transmittal-polish.css";
+import "./twilight-refresh.css";
+
+const display = Marcellus({ weight: "400", subsets: ["latin"], variable: "--font-display", display: "swap" });
 
 export const metadata: Metadata = {
   title: "Municipal Cemetery — Hinigaran",
@@ -19,7 +23,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={display.variable}>
       <body className="antialiased">{children}</body>
     </html>
   );
