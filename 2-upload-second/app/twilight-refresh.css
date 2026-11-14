@@ -298,3 +298,9 @@
 @keyframes empty-peek{0%,70%,100%{transform:translateY(-50%) rotate(0)}78%{transform:translateY(-62%) rotate(-12deg)}86%{transform:translateY(-50%) rotate(10deg)}93%{transform:translateY(-54%) rotate(-4deg)}}
 @keyframes missing-hop{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-4px)}}
 @media(prefers-reduced-motion:reduce){.field :is(input,select,textarea),.field-input>svg{animation:none!important}:is(.primary,.secondary,.reference-nav button,.report .kpi,.dashboard-overview .panel,.kpi-icon,.title-icon,.field,.paper-page){transition:none!important;scale:1!important}}
+
+/* Idle tomb, skeleton and toy car: decoration only, never receives input. */
+.tomb-idle{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:37;contain:layout style}
+.tomb-idle *{pointer-events:none}
+.tomb-skeleton,.tomb-car{filter:drop-shadow(0 1px 1px rgb(23 18 31 / .35))}
+@media print{.tomb-idle{display:none!important}}
