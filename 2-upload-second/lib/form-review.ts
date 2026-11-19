@@ -18,7 +18,7 @@ export function reviewForm(name:string,fields:Fields){
  if(name==='exhumation'&&filled(fields.AJ9))refs.push('AJ10');
  const issues:ReviewIssue[]=[];
  for(const ref of refs){const field=inputs.find(item=>item.ref===ref);if(!field)continue;const value=fields[ref]??field.value;
-  const invalid=!filled(value)||(['O2','AJ2','P2','M12'].includes(ref)&&!['MUNICIPAL','ARANDA'].includes(String(value)))||(['O3','P3'].includes(ref)&&!['Niche','Perpetual'].includes(String(value)))||(['O13','PN7'].includes(ref)&&num(value)<=0);
+  const invalid=!filled(value)||(['O2','AJ2','P2','M12'].includes(ref)&&!(ref==='AJ2'?['MUNICIPAL','ARANDA','OTHERS']:['MUNICIPAL','ARANDA']).includes(String(value)))||(['O3','P3'].includes(ref)&&!['Niche','Perpetual'].includes(String(value)))||(['O13','PN7'].includes(ref)&&num(value)<=0);
   if(invalid)issues.push({ref,label:field.label,blocking:(blocking[name]??[]).includes(ref)});
  }
  return {issues,filled:inputs.filter(field=>filled(fields[field.ref]??field.value)).length,total:inputs.length};

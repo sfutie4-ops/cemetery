@@ -304,3 +304,56 @@
 .tomb-idle *{pointer-events:none}
 .tomb-skeleton,.tomb-car{filter:drop-shadow(0 1px 1px rgb(23 18 31 / .35))}
 @media print{.tomb-idle{display:none!important}}
+
+/* Ghost details and "Open in transmittal" (missing O.R. reminder). */
+@media screen{
+ .receipt-ghost-details{display:grid;gap:0;margin:.3cqw 0 0;font-size:3.4cqw;line-height:4.2cqw;color:#5b4425;text-align:center}
+ .receipt-ghost-details span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ .receipt-ghost-details b{color:#152033;font-weight:800}
+ .receipt-ghost-links{display:flex;align-items:center;justify-content:center;gap:2.6cqw;min-height:4.6cqw;white-space:nowrap}
+ .receipt-locate{display:inline-flex;align-items:center;gap:1cqw;border:0;background:transparent;padding:0;color:var(--accent-deep);font-size:3.5cqw;line-height:4.6cqw;font-weight:800;text-decoration:underline;text-underline-offset:.6cqw;cursor:pointer}
+ .receipt-locate svg{width:3.9cqw;height:3.9cqw;flex:none}
+ .receipt-locate:disabled{opacity:.5;cursor:default}
+ .receipt-ghost-links .receipt-next{width:auto}
+}
+
+/* Transmittals: a little smaller on screen so more columns fit before scrolling sideways. Print is unchanged. */
+@media screen and (min-width:721px){
+ .logs .sheet-scroll>.sheet-table{min-width:0;zoom:.8}
+ .logs .sheet-scroll>.sheet-table th{width:84px}
+ .logs .sheet-scroll>.sheet-table th:is(:nth-child(3),:nth-child(4)){width:110px}
+ .logs .sheet-scroll>.sheet-table th:is(:nth-child(5),:nth-child(6)){width:140px}
+ .logs .sheet-scroll>.sheet-table th:nth-child(7){width:100px}
+ .logs .sheet-scroll>.sheet-table th:nth-child(14){width:118px}
+ .logs .sheet-scroll>.sheet-table th:nth-child(20){width:200px}
+ .logs .sheet-scroll>.sheet-table th:first-child{width:44px}
+ .logs .sheet-scroll>.sheet-table th.row-tools-head{width:176px}
+ .logs .log-panel>.scroll>.log-table{zoom:.8}
+}
+
+/* Rows still waiting for an O.R. number: a warm pulse, a side bar and a glowing badge. */
+@media screen{
+ .logs :is(.sheet-table,.log-table) tbody tr[data-or-missing] td{animation:or-row-pulse 2.8s ease-in-out infinite}
+ .logs :is(.sheet-table,.log-table) tbody tr[data-or-missing] td:first-child::before{content:'';position:absolute;left:0;top:4px;bottom:4px;width:4px;border-radius:0 4px 4px 0;background:linear-gradient(#f2ad45,#d8562c);animation:or-bar 1.4s ease-in-out infinite alternate}
+ .logs :is(.sheet-table,.log-table) tbody tr[data-or-missing] .or-missing{display:inline-block;padding:2px 7px;border-radius:999px;background:rgb(255 176 72 / .16);font-weight:700;animation:or-badge 1.8s ease-in-out infinite}
+ .mobile-record[data-or-missing]{position:relative;border-color:rgb(226 132 46 / .55)!important;animation:or-card 2.8s ease-in-out infinite}
+ .mobile-record[data-or-missing]::before{content:'';position:absolute;left:0;top:10px;bottom:10px;width:4px;border-radius:0 4px 4px 0;background:linear-gradient(#f2ad45,#d8562c);animation:or-bar 1.4s ease-in-out infinite alternate}
+ /* The row opened from the ghost flashes so it is easy to spot. */
+ .logs :is(.sheet-table,.log-table) tbody tr[data-located] td{animation:row-located 1.1s ease-in-out 3}
+ .mobile-record[data-located]{animation:card-located 1.1s ease-in-out 3}
+ [data-page-hidden=true] :is(.logs tr[data-or-missing] td,.logs tr[data-or-missing] td::before,.logs tr[data-or-missing] .or-missing,.mobile-record[data-or-missing],.mobile-record[data-or-missing]::before){animation-play-state:paused}
+ /* Animations off: keep a calm, still highlight. */
+ [data-motion=off] .logs :is(.sheet-table,.log-table) tbody tr[data-or-missing] td{box-shadow:inset 0 0 0 100vmax rgb(255 150 40 / .08)}
+ [data-motion=off] .logs :is(.sheet-table,.log-table) tbody tr[data-located] td{box-shadow:inset 0 0 0 100vmax color-mix(in srgb,var(--accent) 22%,transparent)}
+}
+@media screen and (prefers-reduced-motion:reduce){
+ .logs :is(.sheet-table,.log-table) tbody tr[data-or-missing] td{animation:none!important;box-shadow:inset 0 0 0 100vmax rgb(255 150 40 / .08)}
+ .logs :is(.sheet-table,.log-table) tbody tr[data-or-missing] td:first-child::before,.logs tr[data-or-missing] .or-missing,.mobile-record[data-or-missing],.mobile-record[data-or-missing]::before{animation:none!important}
+ .logs :is(.sheet-table,.log-table) tbody tr[data-located] td{animation:none!important;box-shadow:inset 0 0 0 100vmax color-mix(in srgb,var(--accent) 22%,transparent)}
+}
+@keyframes or-row-pulse{0%,100%{box-shadow:inset 0 0 0 100vmax rgb(255 150 40 / .02)}50%{box-shadow:inset 0 0 0 100vmax rgb(255 150 40 / .15)}}
+@keyframes or-bar{from{opacity:.45;transform:scaleY(.7)}to{opacity:1;transform:scaleY(1)}}
+@keyframes or-badge{0%,100%{box-shadow:0 0 0 0 rgb(230 120 40 / 0)}50%{box-shadow:0 0 0 4px rgb(230 120 40 / .22)}}
+@keyframes or-card{0%,100%{box-shadow:0 0 0 0 rgb(230 120 40 / 0)}50%{box-shadow:0 0 0 3px rgb(230 120 40 / .2)}}
+@keyframes row-located{0%,100%{box-shadow:inset 0 0 0 100vmax color-mix(in srgb,var(--accent) 0%,transparent)}50%{box-shadow:inset 0 0 0 100vmax color-mix(in srgb,var(--accent) 30%,transparent)}}
+@keyframes card-located{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 0%,transparent)}50%{box-shadow:0 0 0 5px color-mix(in srgb,var(--accent) 45%,transparent)}}

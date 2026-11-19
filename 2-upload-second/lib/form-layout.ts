@@ -18,7 +18,8 @@ const numberRefs: Record<string, string[]> = {PROMISSORY:['PN7'],'burial permit'
 export function inputFields(name: string): InputField[] {
   const fields = workbook[name].inputs.filter((field: any) => !field.computed && field.label !== 'Last Updated:').map((field: any) => ({...field,
     fullLabel: field.label==='Sitio'?'Address / location':field.label, label: field.label==='Sitio'?'Address / location':labels[name]?.[field.ref] ?? field.label,
-    options: name==='TRANSFER'&&['M2','M3'].includes(field.ref)?undefined:field.options,
+    options: name==='TRANSFER'&&['M2','M3'].includes(field.ref)?undefined:name==='exhumation'&&field.ref==='AJ2'?['MUNICIPAL','ARANDA','OTHERS']:field.options,
+    ...(name==='exhumation'&&field.ref==='AJ2'?{fullLabel:'Cemetery · OTHERS are recorded in the Municipal transmittal'}:{}),
     computed: false,
     bold: ['O4','O7','O8','O14','AJ3','AJ6','AJ7','AJ9','P4','P5','P6','M4','M5','M6'].includes(field.ref),
     type: name==='STATEMENT'&&field.ref==='P9' ? 'checkbox' : dateRefs.includes(field.ref) ? 'date' : (numberRefs[name] ?? []).includes(field.ref) ? 'number' : ['O32','PN11'].includes(field.ref) ? 'textarea' : 'text',
