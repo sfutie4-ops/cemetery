@@ -1,0 +1,474 @@
+/* Twilight refresh: welcome scene, ghost mascot, inscription headings and arrival motion.
+   Loaded last. Screen only; print rules and paper layouts are untouched. */
+@media screen{
+ :root{--font-inscription:var(--font-display,'Marcellus'),'Marcellus','Trajan Pro',Georgia,'Times New Roman',serif;--arrive:cubic-bezier(.2,.8,.2,1)}
+
+ /* Inscription lettering for the names carved on the site: brand, page title, dialog titles. */
+ .brand-name{font-family:var(--font-inscription);font-weight:400;letter-spacing:3px}
+ .reference-toolbar h1{font-family:var(--font-inscription);font-weight:400;letter-spacing:.2px}
+ .access-choice [data-slot=dialog-title],.transmittal-access h2{font-family:var(--font-inscription);font-weight:400;letter-spacing:.3px}
+ .access-choice [data-slot=dialog-title]{font-size:27px}
+
+ /* Welcome scene: the twilight cemetery fills the screen behind the access card. */
+ .access-backdrop{background:#1a0f2a!important;overflow:hidden}
+ .access-backdrop::before{content:'';position:absolute;inset:-4%;background:url('/assets/cemetery-twilight.webp') 30% 60%/cover;animation:twilight-drift 40s ease-in-out infinite alternate;will-change:transform}
+ .access-backdrop::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,rgb(26 13 44 / .1),rgb(20 9 34 / .55) 80%),linear-gradient(0deg,rgb(18 8 30 / .5),transparent 40%)}
+ .access-choice{background:color-mix(in srgb,var(--surface) 97%,transparent)!important;padding-top:20px!important;animation:card-rise .7s var(--arrive) both!important}
+
+ /* The ghost greets everyone from the top of the access card. */
+ .access-choice .access-lock{position:relative;width:184px;height:80px;margin:0 auto 6px;background:url('/ghost-peek.webp') center/100% 100% no-repeat;border:0;border-radius:0;box-shadow:none;-webkit-mask-image:linear-gradient(#000 78%,transparent);mask-image:linear-gradient(#000 78%,transparent);filter:drop-shadow(0 0 10px rgb(170 215 255 / .55));animation:ghost-peek .9s .25s var(--arrive) both,ghost-bob 4.6s 1.2s ease-in-out infinite}
+ .access-choice .access-lock svg{display:none}
+ .access-choice .access-lock::before,.access-choice .access-lock::after{content:'';position:absolute;left:37.4%;top:42.5%;width:7.6%;height:21%;border-radius:50%;background:linear-gradient(160deg,#fafcff,#e3eefc);box-shadow:inset 0 -1px 0 #33496a;opacity:0;animation:ghost-blink 5.4s 2s linear infinite}
+ .access-choice .access-lock::after{left:59.9%;top:48%;width:6.8%;height:19.5%}
+
+ /* After access is chosen the site comes into focus, then the sidebar settles in. */
+ .shell{transition:filter .6s ease}
+ .shell:not([data-access-open=true]) .reference-brand{animation:rise-in .7s var(--arrive) both}
+ .shell:not([data-access-open=true]) .reference-nav>button{animation:nav-in .5s var(--arrive) both;animation-delay:calc(var(--i,0)*45ms + 120ms)}
+ .reference-nav>button:nth-child(2){--i:1}.reference-nav>button:nth-child(3){--i:2}.reference-nav>button:nth-child(4){--i:3}.reference-nav>button:nth-child(5){--i:4}.reference-nav>button:nth-child(6){--i:5}.reference-nav>button:nth-child(7){--i:6}.reference-nav>button:nth-child(8){--i:7}.reference-nav>button:nth-child(9){--i:8}.reference-nav>button:nth-child(n+10){--i:9}
+ .shell:not([data-access-open=true]) .toolbar-title{animation:rise-in .6s .1s var(--arrive) both}
+
+ /* Each page arrives when it is opened. */
+ .form-panel,.logs>.log-panel,.transmittal-access{animation:rise-in .45s var(--arrive) both}
+ .document{animation:rise-in .5s .08s var(--arrive) both}
+
+ /* Missing O.R. ghost: larger, readable, and alive. All inner sizes follow the card width. */
+ .receipt-floater{container-type:inline-size;width:min(2.7in,calc(100vw - 16px),calc(100dvh - 16px));max-width:2.7in;max-height:2.7in;filter:drop-shadow(0 8px 10px rgb(40 30 80 / .25))}
+ .receipt-floater::before{content:'';position:absolute;inset:-9%;z-index:-1;border-radius:50%;background:radial-gradient(closest-side,rgb(178 222 255 / .55),rgb(190 170 255 / .2) 55%,transparent);animation:ghost-aura 4.4s ease-in-out infinite;pointer-events:none}
+ .receipt-floater::after{content:'';position:absolute;left:24%;right:24%;bottom:-7%;height:6%;z-index:-1;border-radius:50%;background:rgb(30 20 60 / .22);filter:blur(4px);animation:ghost-shadow 4.4s ease-in-out infinite;pointer-events:none}
+ .receipt-ghost-appearance{animation:ghost-materialize .9s var(--arrive) both}
+ .receipt-ghost-art{animation:ghost-float 4.4s ease-in-out infinite;transform-origin:50% 85%}
+ .receipt-floater-bar,.receipt-ghost-content{animation:ghost-float-content 4.4s ease-in-out infinite,ghost-content-in .5s .45s ease-out backwards}
+ .receipt-floater[data-resting=true] .receipt-floater-bar,.receipt-floater[data-resting=true] .receipt-ghost-content,.receipt-floater[data-pinned=true] .receipt-floater-bar,.receipt-floater[data-pinned=true] .receipt-ghost-content{animation-play-state:paused}
+ .receipt-ghost-motes{overflow:visible}
+ .receipt-ghost-motes i{width:5px;height:5px;background:#fff;box-shadow:0 0 8px 2px #9fdcff;animation:ghost-twinkle 3.2s ease-in-out infinite;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%)}
+ .receipt-ghost-motes i:nth-child(1){left:6%;top:30%}.receipt-ghost-motes i:nth-child(2){left:93%;top:55%;animation-delay:-1.1s}.receipt-ghost-motes i:nth-child(3){left:84%;top:8%;animation-delay:-2.2s}
+ .receipt-floater-bar{height:7.3cqw}.receipt-floater-bar button{min-height:7.3cqw;height:7.3cqw;width:9.4cqw}.receipt-floater-bar svg{width:7cqw;height:7cqw}
+ .receipt-ghost-content{gap:.6cqw}
+ .receipt-ghost-content h3{font-family:var(--font-inscription);font-weight:400;font-size:6.4cqw;line-height:7cqw;letter-spacing:.3px}
+ .receipt-ghost-context{font-size:3.9cqw;line-height:4.3cqw}
+ .receipt-ghost-name{font-size:4.8cqw!important;line-height:5.3cqw;min-height:5.3cqw}
+ .receipt-elapsed{font-size:3.9cqw;line-height:4.3cqw}
+ .receipt-ghost-content input{height:9.6cqw;min-height:9.6cqw;font-size:4.8cqw;border-radius:2.6cqw;padding:1cqw 2.6cqw}
+ .receipt-save{height:9.9cqw;min-height:9.9cqw;font-size:5.6cqw!important;line-height:7cqw;border-radius:3cqw;border-color:var(--accent-deep);background:linear-gradient(var(--accent),var(--accent-deep));box-shadow:inset 0 1px 0 rgb(255 255 255 / .4),0 2px 4px rgb(40 20 70 / .25)}
+ .receipt-save:hover:not(:disabled){background:linear-gradient(color-mix(in srgb,var(--accent) 80%,#fff),var(--accent))}
+ .receipt-next,.receipt-ghost-error{font-size:3.7cqw;line-height:4.6cqw;min-height:4.6cqw}
+ .receipt-floater:hover .receipt-ghost-art,.receipt-floater:focus-within .receipt-ghost-art{filter:drop-shadow(0 0 9px rgb(160 215 255 / .8))}
+
+ [data-page-hidden=true] .access-backdrop::before,[data-page-hidden=true] .access-choice .access-lock,[data-page-hidden=true] .access-choice .access-lock::before,[data-page-hidden=true] .access-choice .access-lock::after,[data-page-hidden=true] .receipt-floater::before,[data-page-hidden=true] .receipt-floater::after,[data-page-hidden=true] .receipt-floater-bar,[data-page-hidden=true] .receipt-ghost-content{animation-play-state:paused}
+ [data-motion=off] .access-backdrop::before,[data-motion=off] .access-choice .access-lock,[data-motion=off] .access-choice .access-lock::before,[data-motion=off] .access-choice .access-lock::after,[data-motion=off] .reference-brand,[data-motion=off] .reference-nav>button,[data-motion=off] .toolbar-title,[data-motion=off] .form-panel,[data-motion=off] .document,[data-motion=off] .log-panel,[data-motion=off] .receipt-floater::before,[data-motion=off] .receipt-floater::after,[data-motion=off] .receipt-ghost-art,[data-motion=off] .receipt-floater-bar,[data-motion=off] .receipt-ghost-content{animation:none!important}
+ [data-motion=off] .shell{transition:none}
+}
+@keyframes twilight-drift{from{transform:scale(1) translate3d(0,0,0)}to{transform:scale(1.08) translate3d(-1.5%,-1%,0)}}
+@keyframes card-rise{from{opacity:0;transform:translateY(26px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes ghost-peek{from{opacity:0;transform:translateY(46px) scale(.9)}60%{opacity:1}to{opacity:1;transform:none}}
+@keyframes ghost-bob{0%,100%{transform:translateY(0) rotate(0)}30%{transform:translateY(-4px) rotate(-1.4deg)}70%{transform:translateY(-2px) rotate(1.2deg)}}
+@keyframes ghost-blink{0%,90%,96%,100%{opacity:0;transform:scaleY(.1)}92%,94%{opacity:1;transform:scaleY(1)}}
+@keyframes rise-in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes nav-in{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+@keyframes ghost-materialize{0%{opacity:0;transform:translateY(22px) scale(.72);filter:blur(10px)}55%{opacity:1;filter:blur(0)}75%{transform:translateY(-4px) scale(1.04)}100%{opacity:1;transform:none;filter:blur(0)}}
+@keyframes ghost-float{0%,100%{transform:translateY(0) rotate(0) scale(1,1)}25%{transform:translateY(-2.2%) rotate(-1.3deg) scale(1.006,.994)}50%{transform:translateY(-3.4%) rotate(0) scale(.994,1.008)}75%{transform:translateY(-1.6%) rotate(1.3deg) scale(1.004,.996)}}
+@keyframes ghost-float-content{0%,100%{transform:translateY(0)}25%{transform:translateY(-2.2cqw)}50%{transform:translateY(-3.4cqw)}75%{transform:translateY(-1.6cqw)}}
+@keyframes ghost-content-in{from{opacity:0}to{opacity:1}}
+@keyframes ghost-aura{0%,100%{opacity:.55;transform:scale(.94)}50%{opacity:1;transform:scale(1.04)}}
+@keyframes ghost-shadow{0%,100%{transform:scaleX(1);opacity:1}50%{transform:scaleX(.8);opacity:.6}}
+@keyframes ghost-twinkle{0%,100%{opacity:0;transform:scale(.3) rotate(0)}50%{opacity:1;transform:scale(1.5) rotate(90deg)}}
+@media(prefers-reduced-motion:reduce){.access-backdrop::before,.access-choice,.access-choice .access-lock,.access-choice .access-lock::before,.access-choice .access-lock::after,.reference-brand,.reference-nav>button,.toolbar-title,.form-panel,.document,.log-panel,.transmittal-access,.receipt-floater::before,.receipt-floater::after,.receipt-ghost-appearance,.receipt-ghost-art,.receipt-floater-bar,.receipt-ghost-content{animation:none!important}.shell{transition:none}}
+
+/* Form guidance: each kind of box has its own colour, filled boxes are tinted, empty boxes stay plain. */
+@media screen{
+ .field{--kind:var(--muted)}
+ .field[data-field-kind=name]{--kind:#7a3fc0}.field[data-field-kind=place]{--kind:#0f8a8a}.field[data-field-kind=date]{--kind:#c9357a}.field[data-field-kind=amount]{--kind:#1f8f63}.field[data-field-kind=receipt]{--kind:#2a6fd6}
+ [data-theme=dark] .field[data-field-kind=name]{--kind:#c3a2f5}[data-theme=dark] .field[data-field-kind=place]{--kind:#6fd3d0}[data-theme=dark] .field[data-field-kind=date]{--kind:#f58bbb}[data-theme=dark] .field[data-field-kind=amount]{--kind:#7ed9ae}[data-theme=dark] .field[data-field-kind=receipt]{--kind:#8fb8ff}
+ .field[data-field-kind]>span{color:color-mix(in srgb,var(--kind) 72%,var(--ink))}
+ .field[data-field-kind]>.field-input>svg{color:var(--kind);opacity:1}
+ .field[data-field-kind] :is(input:not([type=checkbox]),select,textarea){border-left:3px solid color-mix(in srgb,var(--kind) 55%,var(--line))}
+ .field[data-field-state=filled] :is(input:not([type=checkbox]),select,textarea){background:color-mix(in srgb,var(--kind) 9%,var(--control));border-color:color-mix(in srgb,var(--kind) 38%,var(--line));border-left-color:var(--kind);font-weight:600}
+ .field[data-field-state=empty] :is(input:not([type=checkbox]),select,textarea){background:var(--control)}
+ .field[data-field-state=missing] :is(input:not([type=checkbox]),select,textarea){border-color:#db9827;border-left-color:#db9827;background:color-mix(in srgb,var(--control) 86%,#f2b23e);box-shadow:0 0 0 3px #db98272e;animation:missing-pulse 1.6s ease-in-out 3}
+ .field[data-field-state=missing]>span{color:#a9690a;font-weight:700}[data-theme=dark] .field[data-field-state=missing]>span{color:#f3c476}
+ .field :is(input,textarea)::placeholder{color:var(--muted);opacity:.62;font-weight:400;font-size:.8em;font-style:normal}
+ .field.field-notes textarea{min-height:58px;height:auto;resize:vertical}
+
+ /* Review pop-up: shakes and turns amber when details are missing, pops green when everything is OK. */
+ .form-review-modal{border-top:6px solid var(--accent)!important}
+ .form-review-modal [data-slot=dialog-title]{font-family:var(--font-inscription);font-weight:400;font-size:24px;letter-spacing:.2px}
+ .form-review-modal .review-emblem{width:56px;height:56px;border-radius:50%;position:relative}
+ .form-review-modal:has(.review-issues){border-top-color:#db9827!important}
+ .form-review-modal:has(.review-ready){border-top-color:#239b77!important}
+ .form-review-modal[data-state=open]:has(.review-issues){animation:review-shake .6s cubic-bezier(.36,.07,.19,.97) both!important}
+ .form-review-modal[data-state=open]:has(.review-ready){animation:review-pop .5s var(--arrive) both!important}
+ body:has(.form-review-modal[data-state=open] .review-issues) .shell{animation:screen-shake .5s cubic-bezier(.36,.07,.19,.97)}
+ .form-review-modal:has(.review-issues) .review-emblem{background:#fbe9c7;color:#b06f08}
+ .form-review-modal:has(.review-issues) .review-emblem::after{content:'';position:absolute;inset:-5px;border-radius:50%;border:2px solid #db9827;animation:review-ring 1.5s ease-out infinite}
+ .form-review-modal:has(.review-ready) .review-emblem{background:#d9f3e8;color:#17805f;animation:review-ok .6s .15s var(--arrive) both}
+ .review-issues{border-width:2px;border-color:#db9827;background:color-mix(in srgb,var(--surface) 90%,#f2b23e);padding:13px}
+ .review-issues>div:first-child{font-size:15px;color:#8f5b08}.review-issues>div:first-child svg{width:19px;height:19px}
+ .review-issues p{font-size:12px!important}
+ .review-issue-chips{gap:7px}
+ .review-issue-chips button{font-size:13px;font-weight:600;padding:8px 11px;min-height:36px;border-color:#db9827;background:var(--surface);animation:chip-in .35s var(--arrive) backwards}
+ .review-issue-chips button:nth-child(2){animation-delay:.05s}.review-issue-chips button:nth-child(3){animation-delay:.1s}.review-issue-chips button:nth-child(4){animation-delay:.15s}.review-issue-chips button:nth-child(n+5){animation-delay:.2s}
+ .review-issue-chips button::before{content:'';width:7px;height:7px;border-radius:50%;background:#db9827;flex-shrink:0}
+ .form-review-modal .review-ready{font-size:14px;font-weight:600;color:#17805f;background:#e2f5ec;border:2px solid #7fcfae;border-radius:11px;padding:12px 13px}
+ .form-review-modal .review-ready svg{width:20px;height:20px}
+ [data-theme=dark] .form-review-modal .review-ready{background:#1d3d33;color:#a6e0ce;border-color:#2f6b57}
+ [data-theme=dark] .review-issues>div:first-child{color:#f3c476}[data-theme=dark] .form-review-modal:has(.review-issues) .review-emblem{background:#4a3a1c;color:#f3c476}[data-theme=dark] .form-review-modal:has(.review-ready) .review-emblem{background:#1d3d33;color:#a6e0ce}
+ [data-motion=off] .form-review-modal,[data-motion=off] .shell,[data-motion=off] .review-emblem,[data-motion=off] .review-emblem::after,[data-motion=off] .review-issue-chips button,[data-motion=off] .field :is(input,select,textarea){animation:none!important}
+}
+@keyframes missing-pulse{0%,100%{box-shadow:0 0 0 3px #db98272e}50%{box-shadow:0 0 0 6px #db982755}}
+@keyframes review-shake{0%{opacity:0;transform:scale(.94)}12%{opacity:1;transform:scale(1) translateX(-12px) rotate(-1deg)}24%{transform:translateX(11px) rotate(1deg)}36%{transform:translateX(-9px) rotate(-.7deg)}48%{transform:translateX(7px) rotate(.5deg)}60%{transform:translateX(-5px)}72%{transform:translateX(3px)}84%{transform:translateX(-2px)}100%{opacity:1;transform:none}}
+@keyframes screen-shake{0%,100%{transform:none}15%{transform:translate(-6px,2px)}30%{transform:translate(5px,-2px)}45%{transform:translate(-4px,1px)}60%{transform:translate(3px,-1px)}75%{transform:translate(-2px,0)}90%{transform:translate(1px,0)}}
+@keyframes review-pop{0%{opacity:0;transform:translateY(18px) scale(.9)}60%{opacity:1;transform:translateY(-3px) scale(1.02)}100%{opacity:1;transform:none}}
+@keyframes review-ring{from{opacity:.9;transform:scale(.9)}to{opacity:0;transform:scale(1.45)}}
+@keyframes review-ok{0%{transform:scale(.3) rotate(-25deg)}60%{transform:scale(1.15) rotate(6deg)}100%{transform:none}}
+@keyframes chip-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.form-review-modal,.shell,.review-emblem,.review-emblem::after,.review-issue-chips button,.field :is(input,select,textarea){animation:none!important}}
+
+/* Twilight lights: fireflies in the sidebar, drifting light on the dashboard, livelier hover. */
+@media screen{
+ /* Sidebar fireflies */
+ .shell>aside::before,.shell>aside::after{content:'';position:absolute;z-index:1;left:0;top:0;width:3px;height:3px;border-radius:50%;pointer-events:none;background:#ffe9a8;color:#ffe9a8;
+  box-shadow:0 0 6px 2px #ffd97a99,58px 120px 0 0,58px 120px 6px 2px #ffd97a88,150px 260px 0 0,150px 260px 7px 2px #ffd97a88,34px 430px 0 -0.5px,34px 430px 6px 1px #ffd97a77,170px 560px 0 0,170px 560px 6px 2px #ffd97a88;
+  animation:firefly-a 19s ease-in-out infinite,firefly-flicker 3.7s ease-in-out infinite}
+ .shell>aside::before{translate:22px 70px}
+ .shell>aside::after{translate:96px 190px;background:#e6d4ff;color:#e6d4ff;
+  box-shadow:0 0 6px 2px #c9a8ff99,-60px 150px 0 0,-60px 150px 6px 2px #c9a8ff88,70px 300px 0 0,70px 300px 7px 2px #c9a8ff88,-20px 420px 0 0,-20px 420px 6px 2px #c9a8ff77;
+  animation:firefly-b 24s ease-in-out infinite,firefly-flicker 5.1s -2s ease-in-out infinite}
+ /* Brand: breathing halo ring and a slow shine across the name */
+ .brand-emblem::after{animation:halo-breathe 5s ease-in-out infinite}
+ .brand-name{background:linear-gradient(100deg,#fff 0 40%,#ffe6b0 50%,#fff 60% 100%) 0 0/300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:name-shine 2.4s ease-in-out .8s 1 both}
+ /* Menu: light sweeps across the current page; icons react to hover */
+ .reference-nav button.active{overflow:hidden}
+ .reference-nav button.active::before{content:'';position:absolute;inset:0 auto 0 0;width:45%;z-index:-1;background:linear-gradient(100deg,transparent,rgb(255 255 255 / .22),transparent);transform:translateX(-120%) skewX(-18deg);animation:nav-sweep 6s ease-in-out infinite;pointer-events:none}
+ .reference-nav button:hover:not(:disabled)>svg{animation:icon-wiggle .5s ease-in-out}
+ .reference-nav button:not(.active):hover:not(:disabled){box-shadow:inset 2px 0 #ffd97a,0 0 18px rgb(255 217 122 / .12)}
+ .reference-footer{overflow:hidden}
+ .reference-footer::before{content:'';position:absolute;inset:0 0 auto;height:2px;background:linear-gradient(90deg,transparent,#ffd97a,transparent) no-repeat -60% 0/40% 100%;animation:edge-light 7s linear infinite}
+ .reference-footer>svg{animation:soft-float 5s ease-in-out infinite}
+ .sidebar-art::after{content:'';position:absolute;left:38%;top:52%;width:26px;height:34px;border-radius:50%;background:radial-gradient(closest-side,rgb(255 196 120 / .75),transparent);animation:candle 3.1s ease-in-out infinite;pointer-events:none}
+
+ /* Page title icon: floating with a turning rim of light */
+ .reference-toolbar .title-icon{animation:soft-float 6s ease-in-out infinite}
+ .reference-toolbar .title-icon::before{content:'';position:absolute;inset:-2px;border-radius:inherit;padding:2px;background:conic-gradient(from var(--spin,0deg),transparent 0 70%,var(--accent) 85%,#ffd97a 92%,transparent 100%);-webkit-mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);animation:rim-spin 6s linear infinite;pointer-events:none}
+
+ /* Dashboard cards */
+ .report .kpi{overflow:hidden}
+ .report .kpi::after{content:'';position:absolute;inset:0;border-radius:inherit;background:radial-gradient(180px circle at var(--mx,85%) -20%,color-mix(in srgb,var(--accent) 16%,transparent),transparent 70%);opacity:0;transition:opacity .3s ease;pointer-events:none}
+ .report .kpi:hover::after{opacity:1}
+ .report .kpi:hover{border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+ .report .kpi .kpi-icon{animation:soft-float 5s ease-in-out infinite}
+ .report .kpi:nth-child(2) .kpi-icon{animation-delay:-.8s}.report .kpi:nth-child(3) .kpi-icon{animation-delay:-1.6s}.report .kpi:nth-child(4) .kpi-icon{animation-delay:-2.4s}.report .kpi:nth-child(5) .kpi-icon{animation-delay:-3.2s}.report .kpi:nth-child(n+6) .kpi-icon{animation-delay:-4s}
+ .report .kpi:hover .kpi-icon svg{animation:icon-pop .5s var(--arrive)}
+ /* Featured total: slow aurora, a drifting orb of light and a passing sheen */
+ .report .kpi.featured{background:linear-gradient(115deg,var(--accent-deep),color-mix(in srgb,var(--accent) 70%,#e2559b) 45%,color-mix(in srgb,var(--accent-deep) 75%,#1b1030)) 0 50%/260% 260%;animation:summary-arrive .38s var(--ease-out,ease-out) backwards,aurora 14s ease-in-out infinite alternate}
+ .report .kpi.featured::before{content:'';position:absolute;right:-30px;top:-40px;width:150px;height:150px;border-radius:50%;background:radial-gradient(closest-side,rgb(255 214 150 / .38),transparent);animation:orb-drift 11s ease-in-out infinite alternate;pointer-events:none}
+ .report .kpi.featured::after{opacity:1;background:linear-gradient(100deg,transparent 40%,rgb(255 255 255 / .2) 50%,transparent 60%) no-repeat -150% 0/60% 100%;animation:sheen-pass 2.6s ease-in-out .6s 1 both}
+ /* Panels: a light travels along the top edge; icons breathe */
+ .dashboard-overview .panel{position:relative}
+ .dashboard-overview .panel::before{content:'';position:absolute;inset:0 12px auto;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,var(--accent),#ffd97a,transparent) no-repeat -60% 0/35% 100%;opacity:.75;animation:edge-light 8s linear infinite;pointer-events:none}
+ .dashboard-overview .dashboard-side .panel::before{animation-delay:-3s}.dashboard-overview .panel:nth-of-type(2n)::before{animation-delay:-5s}
+ .dashboard-overview .panel{transition:box-shadow .25s ease,border-color .25s ease,transform .25s ease}
+ .section-icon{animation:icon-glow 4s ease-in-out infinite}
+ /* Chart: bars lift and glow on hover, points twinkle */
+ .summary-svg g:hover .chart-column{filter:brightness(1.18) drop-shadow(0 0 6px color-mix(in srgb,var(--accent) 60%,transparent))}
+ .transaction-point{transform-box:fill-box;transform-origin:center;animation:point-twinkle 1.4s ease-in-out 2}
+ .summary-svg g:nth-of-type(2n) .transaction-point{animation-delay:-.9s}.summary-svg g:nth-of-type(3n) .transaction-point{animation-delay:-1.8s}
+ .collection-rows>div,.quality-rows>div{transition:background .18s ease,padding-left .18s ease,box-shadow .18s ease}
+ /* Live preview: the page sits under soft moving light and lifts on hover */
+ .paper{background-image:radial-gradient(420px circle at 20% 0%,color-mix(in srgb,var(--accent) 12%,transparent),transparent 70%),radial-gradient(360px circle at 90% 100%,rgb(255 217 122 / .14),transparent 70%);background-size:200% 200%;background-position:30% 20%}
+ .paper-page{transition:transform .3s var(--arrive),box-shadow .3s ease}
+ .preview-title svg{animation:icon-glow 4s ease-in-out infinite}
+ .form-heading{position:relative;overflow:hidden}
+ .form-heading::after{content:'';position:absolute;inset:0;background:linear-gradient(100deg,transparent 40%,rgb(255 255 255 / .16) 50%,transparent 60%) no-repeat -150% 0/50% 100%;animation:sheen-pass 2.6s ease-in-out .6s 1 both;pointer-events:none}
+
+ [data-page-hidden=true] :is(.shell>aside,.brand-emblem,.reference-nav button.active,.reference-footer,.sidebar-art,.title-icon,.report .kpi.featured,.dashboard-overview .panel,.form-heading)::before,[data-page-hidden=true] :is(.shell>aside,.brand-emblem,.sidebar-art,.report .kpi.featured,.form-heading)::after,[data-page-hidden=true] :is(.brand-name,.title-icon,.kpi-icon,.section-icon,.transaction-point,.paper,.report .kpi.featured,.reference-footer>svg,.preview-title svg){animation-play-state:paused}
+ [data-motion=off] .brand-name{color:#fff;background:none}
+}
+@media screen and (hover:hover) and (pointer:fine){
+ .dashboard-overview .panel:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--accent) 30%,var(--line));box-shadow:0 10px 30px color-mix(in srgb,var(--accent) 12%,transparent)}
+ .collection-rows>div:hover,.quality-rows>div:hover{background:var(--accent-soft);padding-left:8px;box-shadow:inset 3px 0 var(--accent)}
+ .document:hover .paper-page{transform:translateY(-3px) scale(1.004);box-shadow:0 3px 6px rgb(20 25 45 / .14),0 18px 40px color-mix(in srgb,var(--accent) 22%,transparent)}
+}
+@media screen and (max-width:1000px){
+ .shell>aside{position:relative;overflow:hidden}
+ .shell>aside::before{display:none}
+ .shell>aside::after{translate:none;inset:auto 0 0;width:auto;height:2px;border-radius:0;box-shadow:none;background:linear-gradient(90deg,transparent,#ffd97a,#e6d4ff,transparent) no-repeat -60% 0/40% 100%;animation:edge-light 6s linear infinite}
+}
+@property --spin{syntax:'<angle>';inherits:false;initial-value:0deg}
+@keyframes firefly-a{0%,100%{transform:translate(0,0)}25%{transform:translate(18px,-26px)}50%{transform:translate(-8px,-44px)}75%{transform:translate(-20px,-14px)}}
+@keyframes firefly-b{0%,100%{transform:translate(0,0)}30%{transform:translate(-22px,20px)}60%{transform:translate(14px,36px)}80%{transform:translate(24px,8px)}}
+@keyframes firefly-flicker{0%,100%{opacity:.15}20%{opacity:.95}45%{opacity:.4}70%{opacity:1}85%{opacity:.25}}
+@keyframes halo-breathe{0%,100%{scale:1;opacity:.6}50%{scale:1.14;opacity:1}}
+@keyframes name-shine{0%,55%{background-position:100% 0}85%,100%{background-position:0 0}}
+@keyframes nav-sweep{0%,60%{transform:translateX(-120%) skewX(-18deg)}90%,100%{transform:translateX(320%) skewX(-18deg)}}
+@keyframes icon-wiggle{0%,100%{rotate:0deg}25%{rotate:-12deg}60%{rotate:9deg}}
+@keyframes icon-pop{0%{scale:1}45%{scale:1.3;rotate:-8deg}100%{scale:1}}
+@keyframes edge-light{from{background-position:-60% 0}to{background-position:160% 0}}
+@keyframes soft-float{0%,100%{translate:0 0}50%{translate:0 -3px}}
+@keyframes candle{0%,100%{opacity:.5;transform:scale(.9)}35%{opacity:1;transform:scale(1.1)}60%{opacity:.65;transform:scale(.96)}80%{opacity:.95;transform:scale(1.06)}}
+@keyframes rim-spin{to{--spin:360deg}}
+@keyframes aurora{from{background-position:0 50%}to{background-position:100% 50%}}
+@keyframes orb-drift{from{transform:translate(0,0) scale(1)}to{transform:translate(-90px,34px) scale(1.25)}}
+@keyframes sheen-pass{0%,65%{background-position:-150% 0}100%{background-position:260% 0}}
+@keyframes icon-glow{0%,100%{filter:none}50%{filter:drop-shadow(0 0 5px color-mix(in srgb,var(--accent) 65%,transparent))}}
+@keyframes point-twinkle{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.5);opacity:1}}
+@keyframes paper-light{from{background-position:0 0}to{background-position:100% 100%}}
+@media(prefers-reduced-motion:reduce){:is(.shell>aside,.brand-emblem,.reference-nav button.active,.reference-footer,.sidebar-art,.title-icon,.report .kpi.featured,.dashboard-overview .panel,.form-heading)::before,:is(.shell>aside,.brand-emblem,.sidebar-art,.report .kpi.featured,.form-heading)::after,.brand-name,.title-icon,.kpi-icon,.section-icon,.transaction-point,.paper,.report .kpi.featured,.reference-footer>svg,.preview-title svg{animation:none!important}.brand-name{color:#fff;background:none}}
+
+/* Fluffy pass: soft puffy 3D surfaces, springy hover and press, no neon glow. Transform-only motion. */
+@media screen{
+ :root{--spring:cubic-bezier(.34,1.56,.64,1);--puff:inset 0 2px 0 rgb(255 255 255 / .75),inset 0 -5px 8px color-mix(in srgb,var(--accent) 9%,transparent),0 6px 0 color-mix(in srgb,var(--accent) 7%,transparent),0 12px 22px color-mix(in srgb,var(--deep) 9%,transparent);--puff-small:inset 0 2px 0 rgb(255 255 255 / .7),inset 0 -3px 5px color-mix(in srgb,var(--accent) 10%,transparent),0 3px 0 color-mix(in srgb,var(--accent) 8%,transparent),0 6px 12px color-mix(in srgb,var(--deep) 7%,transparent)}
+ [data-theme=dark]{--puff:inset 0 1px 0 rgb(255 255 255 / .1),inset 0 -5px 8px rgb(0 0 0 / .18),0 6px 0 rgb(0 0 0 / .16),0 12px 22px rgb(0 0 0 / .25);--puff-small:inset 0 1px 0 rgb(255 255 255 / .1),inset 0 -3px 5px rgb(0 0 0 / .18),0 3px 0 rgb(0 0 0 / .16),0 6px 12px rgb(0 0 0 / .2)}
+
+ /* Neon off: glowing lines, rims and halos are replaced by soft shapes */
+ .reference-toolbar .title-icon::before,.dashboard-overview .panel::before,.reference-footer::before{display:none}
+ .section-icon,.preview-title svg{animation:none}
+ .summary-svg g:hover .chart-column{filter:brightness(1.1)}
+ .reference-nav button:not(.active):hover:not(:disabled){box-shadow:none}
+ .receipt-floater::before{background:radial-gradient(closest-side,rgb(255 255 255 / .5),transparent)}
+ .receipt-ghost-motes i{box-shadow:none}
+ .receipt-floater:hover .receipt-ghost-art,.receipt-floater:focus-within .receipt-ghost-art{filter:none}
+ .access-choice .access-lock{filter:drop-shadow(0 6px 8px rgb(60 40 100 / .18))}
+ .field[data-field-state=missing] :is(input:not([type=checkbox]),select,textarea){box-shadow:var(--puff-small);animation:none}
+ /* Sidebar: soft bubbles drift upward instead of glowing fireflies */
+ .shell>aside::before,.shell>aside::after{width:10px;height:10px;background:rgb(255 255 255 / .16);color:rgb(255 255 255 / .1);
+  box-shadow:58px 120px 0 3px,150px 260px 0 -1px,34px 430px 0 5px,170px 560px 0 1px,96px 660px 0 -2px;animation:bubble-rise 16s linear infinite;opacity:1}
+ .shell>aside::after{background:rgb(255 255 255 / .1);box-shadow:-60px 150px 0 4px,70px 300px 0 0,-20px 420px 0 -2px,50px 600px 0 3px;animation:bubble-rise 22s -9s linear infinite}
+
+ /* Puffy surfaces */
+ .primary,.secondary{border-radius:999px;box-shadow:var(--puff-small)}
+ .primary{background:linear-gradient(180deg,rgb(255 255 255 / .26),transparent 55%),linear-gradient(120deg,var(--accent),var(--accent-deep));border:0}
+ .primary:hover:not(:disabled){background:linear-gradient(180deg,rgb(255 255 255 / .34),transparent 55%),linear-gradient(120deg,var(--accent),var(--accent-deep));box-shadow:var(--puff-small)}
+ .secondary:hover:not(:disabled){box-shadow:var(--puff-small)}
+ .access-options>button,.review-actions .review-print{border-radius:24px}
+ .report .kpi,.report.summary-compact .kpi{border-radius:24px;box-shadow:var(--puff);border-color:color-mix(in srgb,var(--accent) 10%,var(--line))}
+ .report .kpi:hover{box-shadow:var(--puff)}
+ .report .kpi::after{display:none}
+ .report .kpi.featured{background:linear-gradient(180deg,rgb(255 255 255 / .2),transparent 50%),linear-gradient(120deg,var(--accent),var(--accent-deep));animation:summary-arrive .38s var(--ease-out,ease-out) backwards;box-shadow:inset 0 2px 0 rgb(255 255 255 / .35),inset 0 -6px 10px rgb(0 0 0 / .14),0 6px 0 color-mix(in srgb,var(--accent-deep) 55%,transparent),0 14px 24px color-mix(in srgb,var(--accent-deep) 25%,transparent)}
+ .report .kpi.featured::before{right:auto;left:14px;top:8px;width:46%;height:16px;border-radius:999px;background:linear-gradient(180deg,rgb(255 255 255 / .38),rgb(255 255 255 / .05));animation:none}
+ .report .kpi.featured::after{display:none}
+ .kpi-icon,.section-icon,.reference-toolbar .title-icon{border-radius:38%;box-shadow:var(--puff-small);border:0}
+ .dashboard-overview .panel,.summary-compact .dashboard-overview .panel,.form-panel,.document,.daily-panel,.log-panel{border-radius:26px;box-shadow:var(--puff);border-color:color-mix(in srgb,var(--accent) 10%,var(--line))}
+ .dashboard-overview .panel:hover{box-shadow:var(--puff)}
+ .form-heading{border-radius:25px 25px 0 0}
+ .field-section legend,.chart-tabs,.review-document,.total-strip{border-radius:999px}
+ .field input:not([type=checkbox]),.field select{border-radius:16px}.field textarea{border-radius:18px}
+ .field[data-field-state=filled] :is(input:not([type=checkbox]),select,textarea){box-shadow:inset 0 2px 0 rgb(255 255 255 / .6),inset 0 -3px 5px color-mix(in srgb,var(--kind) 12%,transparent)}
+ .reference-nav button{border-radius:999px}
+ .reference-nav button.active{box-shadow:inset 0 2px 0 rgb(255 255 255 / .28),inset 0 -4px 6px rgb(0 0 0 / .16),0 4px 0 rgb(0 0 0 / .18)}
+ .reference-nav button.active::before{display:none}
+ .access-choice,.form-review-modal,.settings-modal,.record-modal,.delete-modal,.copy-modal,.comment-modal{border-radius:30px!important}
+ .review-issue-chips button{border-radius:999px;box-shadow:var(--puff-small)}
+ .review-issues,.form-review-modal .review-ready{border-radius:22px}
+
+ /* Squish: things spring when hovered and squash while pressed, then bounce back on release */
+ :is(.primary,.secondary,.reference-nav button,.report .kpi,.dashboard-overview .panel,.kpi-icon,.section-icon,.title-icon,.brand-emblem,.paper-page,.review-issue-chips button,.chart-tabs button,.field,.receipt-ghost-art,.access-lock,.reference-footer,.mobile-record){transition:scale .55s var(--spring),translate .45s var(--spring),transform .45s var(--spring),box-shadow .25s ease,background-color .2s ease,border-color .2s ease,filter .2s ease}
+ :is(.primary,.secondary,.reference-nav button,.review-issue-chips button,.chart-tabs button):active:not(:disabled){scale:1.07 .86;transition-duration:.12s}
+ :is(.report .kpi,.kpi-icon,.title-icon,.brand-emblem,.access-lock,.reference-footer,.mobile-record):active{scale:1.05 .9;transition-duration:.14s}
+ :is(.dashboard-overview .panel,.paper-page):active{scale:1.012 .975;transition-duration:.16s}
+ .field:active:not(:focus-within){scale:1.03 .94;transition-duration:.12s}
+ .receipt-floater:active .receipt-ghost-art{scale:1.08 .9}
+ .report .kpi:active .kpi-icon{scale:1}
+ .dashboard-overview .panel:has(:is(button,input,select,a):active){scale:1}
+
+ /* Empty boxes wave gently, one after another, until they are filled or being typed in */
+ .field[data-field-state=empty]:not(:focus-within) :is(input:not([type=checkbox]),select,textarea){animation:empty-bob 3.6s ease-in-out infinite;border-style:dashed}
+ .field[data-field-state=empty]:not(:focus-within)>.field-input>svg{animation:empty-peek 3.6s ease-in-out infinite}
+ .fields>.field:nth-child(4n+2) :is(input,select,textarea),.fields>.field:nth-child(4n+2)>.field-input>svg{animation-delay:-.45s}
+ .fields>.field:nth-child(4n+3) :is(input,select,textarea),.fields>.field:nth-child(4n+3)>.field-input>svg{animation-delay:-.9s}
+ .fields>.field:nth-child(4n+4) :is(input,select,textarea),.fields>.field:nth-child(4n+4)>.field-input>svg{animation-delay:-1.35s}
+ .field[data-field-state=missing]:not(:focus-within) :is(input:not([type=checkbox]),select,textarea){animation:missing-hop 1.4s var(--spring) infinite}
+ .field-input>svg{z-index:1}
+ [data-page-hidden=true] .field :is(input,select,textarea),[data-page-hidden=true] .field-input>svg{animation-play-state:paused}
+}
+@supports (transition-timing-function:linear(0,1)){@media screen{:root{--spring:linear(0,.009,.035 2.1%,.141 4.4%,.723 12.9%,.938 16.7%,1.017,1.077,1.121,1.149 24.3%,1.159,1.163,1.161,1.154 29.9%,1.129 32.8%,1.051 39.6%,1.017 43.1%,.991,.977 51%,.974 53.8%,.975 57.1%,.997 69.8%,1.003 76.9%,1.004 83.8%,1)}}}
+@media screen and (hover:hover) and (pointer:fine){
+ :is(.primary,.secondary,.review-issue-chips button,.chart-tabs button):hover:not(:disabled):not(:active){scale:1.05}
+ .reference-nav button:hover:not(:disabled):not(:active){scale:1.04;transform:none}
+ .report .kpi:hover:not(:active){scale:1.035;transform:none}
+ .report .kpi:hover:not(:active) .kpi-icon{scale:1.15;rotate:-6deg}
+ .dashboard-overview .panel:hover{transform:none}
+ :is(.title-icon,.brand-emblem,.section-icon,.reference-footer):hover:not(:active){scale:1.08}
+ .field:hover:not(:focus-within):not(:active){scale:1.015}
+ .document:hover .paper-page:not(:active){transform:translateY(-3px);box-shadow:0 3px 6px rgb(20 25 45 / .12),0 16px 30px rgb(20 25 45 / .14)}
+}
+@media screen and (max-width:1000px){.shell>aside::after{display:none}}
+@keyframes bubble-rise{from{transform:translateY(40px)}to{transform:translateY(-760px)}}
+@keyframes empty-bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@keyframes empty-peek{0%,70%,100%{transform:translateY(-50%) rotate(0)}78%{transform:translateY(-62%) rotate(-12deg)}86%{transform:translateY(-50%) rotate(10deg)}93%{transform:translateY(-54%) rotate(-4deg)}}
+@keyframes missing-hop{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-4px)}}
+@media(prefers-reduced-motion:reduce){.field :is(input,select,textarea),.field-input>svg{animation:none!important}:is(.primary,.secondary,.reference-nav button,.report .kpi,.dashboard-overview .panel,.kpi-icon,.title-icon,.field,.paper-page){transition:none!important;scale:1!important}}
+
+/* Idle tomb, skeleton and toy car: decoration only, never receives input. */
+.tomb-idle{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:37;contain:layout style}
+.tomb-idle *{pointer-events:none}
+.tomb-skeleton,.tomb-car{filter:drop-shadow(0 1px 1px rgb(23 18 31 / .35))}
+@media print{.tomb-idle{display:none!important}}
+
+/* Ghost details and "Open in transmittal" (missing O.R. reminder). */
+@media screen{
+ .receipt-ghost-details{display:grid;gap:0;margin:.3cqw 0 0;font-size:3.4cqw;line-height:4.2cqw;color:#5b4425;text-align:center}
+ .receipt-ghost-details span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ .receipt-ghost-details b{color:#152033;font-weight:800}
+ .receipt-ghost-links{display:flex;align-items:center;justify-content:center;gap:2.6cqw;min-height:4.6cqw;white-space:nowrap}
+ .receipt-locate{display:inline-flex;align-items:center;gap:1cqw;border:0;background:transparent;padding:0;color:var(--accent-deep);font-size:3.5cqw;line-height:4.6cqw;font-weight:800;text-decoration:underline;text-underline-offset:.6cqw;cursor:pointer}
+ .receipt-locate svg{width:3.9cqw;height:3.9cqw;flex:none}
+ .receipt-locate:disabled{opacity:.5;cursor:default}
+ .receipt-ghost-links .receipt-next{width:auto}
+}
+
+/* Transmittals: a little smaller on screen so more columns fit before scrolling sideways. Print is unchanged. */
+@media screen and (min-width:721px){
+ .logs .sheet-scroll>.sheet-table{min-width:0;zoom:.8}
+ .logs .sheet-scroll>.sheet-table th{width:84px}
+ .logs .sheet-scroll>.sheet-table th:is(:nth-child(3),:nth-child(4)){width:110px}
+ .logs .sheet-scroll>.sheet-table th:is(:nth-child(5),:nth-child(6)){width:140px}
+ .logs .sheet-scroll>.sheet-table th:nth-child(7){width:100px}
+ .logs .sheet-scroll>.sheet-table th:nth-child(14){width:118px}
+ .logs .sheet-scroll>.sheet-table th:nth-child(20){width:200px}
+ .logs .sheet-scroll>.sheet-table th:first-child{width:44px}
+ .logs .sheet-scroll>.sheet-table th.row-tools-head{width:176px}
+ .logs .log-panel>.scroll>.log-table{zoom:.8}
+}
+
+/* Rows still waiting for an O.R. number: a warm pulse, a side bar and a glowing badge. */
+@media screen{
+ .logs :is(.sheet-table,.log-table) tbody tr[data-or-missing] td{box-shadow:inset 0 0 0 100vmax rgb(255 150 40 / .09)}
+ .logs :is(.sheet-table,.log-table) tbody tr[data-or-missing] td:first-child::before{content:'';position:absolute;left:0;top:4px;bottom:4px;width:4px;border-radius:0 4px 4px 0;background:linear-gradient(#f2ad45,#d8562c);animation:or-bar 1.4s ease-in-out infinite alternate}
+ .logs :is(.sheet-table,.log-table) tbody tr[data-or-missing] .or-missing{position:relative;display:inline-block;padding:2px 7px;border-radius:999px;background:rgb(255 176 72 / .16);font-weight:700}
+ .logs :is(.sheet-table,.log-table) tbody tr[data-or-missing] .or-missing::after{content:'';position:absolute;inset:-3px;border-radius:999px;box-shadow:0 0 0 3px rgb(230 120 40 / .28);opacity:0;pointer-events:none;animation:or-badge-glow 1.8s ease-in-out infinite}
+ .mobile-record[data-or-missing]{position:relative;border-color:rgb(226 132 46 / .55)!important;box-shadow:0 0 0 2px rgb(230 120 40 / .14)}
+ .mobile-record[data-or-missing]::before{content:'';position:absolute;left:0;top:10px;bottom:10px;width:4px;border-radius:0 4px 4px 0;background:linear-gradient(#f2ad45,#d8562c);animation:or-bar 1.4s ease-in-out infinite alternate}
+ /* The row opened from the ghost flashes so it is easy to spot. */
+ .logs :is(.sheet-table,.log-table) tbody tr[data-located] td{animation:row-located 1.1s ease-in-out 3}
+ .mobile-record[data-located]{animation:card-located 1.1s ease-in-out 3}
+ [data-page-hidden=true] :is(.logs tr[data-or-missing] td,.logs tr[data-or-missing] td::before,.logs tr[data-or-missing] .or-missing::after,.mobile-record[data-or-missing],.mobile-record[data-or-missing]::before){animation-play-state:paused}
+ /* Animations off: keep a calm, still highlight. */
+ [data-motion=off] .logs :is(.sheet-table,.log-table) tbody tr[data-or-missing] td{box-shadow:inset 0 0 0 100vmax rgb(255 150 40 / .08)}
+ [data-motion=off] .logs :is(.sheet-table,.log-table) tbody tr[data-located] td{box-shadow:inset 0 0 0 100vmax color-mix(in srgb,var(--accent) 22%,transparent)}
+}
+@media screen and (prefers-reduced-motion:reduce){
+ .logs :is(.sheet-table,.log-table) tbody tr[data-or-missing] td{animation:none!important;box-shadow:inset 0 0 0 100vmax rgb(255 150 40 / .08)}
+ .logs :is(.sheet-table,.log-table) tbody tr[data-or-missing] td:first-child::before,.logs tr[data-or-missing] .or-missing,.mobile-record[data-or-missing],.mobile-record[data-or-missing]::before{animation:none!important}
+ .logs :is(.sheet-table,.log-table) tbody tr[data-located] td{animation:none!important;box-shadow:inset 0 0 0 100vmax color-mix(in srgb,var(--accent) 22%,transparent)}
+}
+@keyframes or-row-pulse{0%,100%{box-shadow:inset 0 0 0 100vmax rgb(255 150 40 / .02)}50%{box-shadow:inset 0 0 0 100vmax rgb(255 150 40 / .15)}}
+@keyframes or-bar{from{opacity:.45;transform:scaleY(.7)}to{opacity:1;transform:scaleY(1)}}
+@keyframes or-badge-glow{0%,100%{opacity:0;scale:.92}50%{opacity:1;scale:1}}
+@keyframes or-card{0%,100%{box-shadow:0 0 0 0 rgb(230 120 40 / 0)}50%{box-shadow:0 0 0 3px rgb(230 120 40 / .2)}}
+@keyframes row-located{0%,100%{box-shadow:inset 0 0 0 100vmax color-mix(in srgb,var(--accent) 0%,transparent)}50%{box-shadow:inset 0 0 0 100vmax color-mix(in srgb,var(--accent) 30%,transparent)}}
+@keyframes card-located{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 0%,transparent)}50%{box-shadow:0 0 0 5px color-mix(in srgb,var(--accent) 45%,transparent)}}
+
+/* Permit form inputs (loaded last, overrides the earlier rounded, bobbing style).
+   Square-cornered boxes with an icon tile on the left. Empty = soft red with a light running along the
+   bottom; filled = light green, the tile pops and a shine sweeps across. Icons move by kind. */
+@media screen{
+ .form-panel .field{--empty-ink:#d2463b;--empty-bg:#fff6f5;--fill-ink:#239a5b;--fill-bg:#eefaf2;--tile:24px;--tile-ink:var(--kind,var(--muted))}
+ [data-theme=dark] .form-panel .field{--empty-ink:#ff8277;--empty-bg:rgb(255 95 85 / .09);--fill-ink:#62d595;--fill-bg:rgb(70 200 120 / .11)}
+ .form-panel .field:hover,.form-panel .field:focus-within{scale:none!important;translate:none!important}
+
+ /* The box */
+ .form-panel .field :is(input:not([type=checkbox]),select,textarea){border-radius:5px!important;border:1.5px solid var(--line)!important;border-left-width:3px!important;padding-left:36px!important;background-color:var(--control)!important;background-image:none!important;box-shadow:inset 0 1px 2px rgb(20 15 35 / .05)!important;scale:none!important;translate:none!important;animation:none!important;transition:border-color .25s ease,background-color .25s ease,box-shadow .25s ease}
+ .form-panel .field select{padding-left:33px!important;padding-right:2px!important;text-overflow:ellipsis}
+ .form-panel .field:hover :is(input:not([type=checkbox]),select,textarea):not(:focus){border-color:color-mix(in srgb,var(--tile-ink) 45%,var(--line))!important}
+
+ /* The icon tile */
+ .form-panel .field-input::before{content:'';position:absolute;z-index:1;left:5px;top:50%;width:var(--tile);height:var(--tile);translate:0 -50%;border-radius:4px;background:color-mix(in srgb,var(--tile-ink) 13%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--tile-ink) 18%,transparent);pointer-events:none;transition:background-color .25s ease,box-shadow .25s ease}
+ .form-panel .field-input>svg{z-index:2;color:var(--tile-ink)!important;opacity:1!important;animation:none!important;transition:color .25s ease}
+ .form-panel .field-notes .field-input::before{top:6px;translate:none}
+ .form-panel .field-notes .field-input>svg{top:10px;transform:none}
+
+ /* Empty: soft red box, red tile, and a light that runs along the bottom edge */
+ .form-panel .field[data-field-state=empty]{--tile-ink:var(--empty-ink)}
+ .form-panel .field[data-field-state=empty] :is(input:not([type=checkbox]),select,textarea){border-color:color-mix(in srgb,var(--empty-ink) 45%,var(--line))!important;border-left-color:var(--empty-ink)!important;background-color:var(--empty-bg)!important}
+ .form-panel .field-input::after{content:'';position:absolute;left:6px;bottom:1px;width:calc((100% - 9px)*.35);height:2px;border-radius:2px;pointer-events:none;opacity:0;background:linear-gradient(90deg,transparent,var(--empty-ink),transparent);transition:opacity .25s ease}
+ .form-panel .field[data-field-state=empty]:not(:focus-within) .field-input::after{opacity:.75;animation:field-run 2.4s ease-in-out infinite}
+ .form-panel .field[data-field-state=empty]:not(:focus-within) .field-input>svg{animation:var(--icon-move) 4.2s ease-in-out infinite!important}
+
+ /* Needs review: stronger red, faster light, one shake */
+ .form-panel .field[data-field-state=missing]{--tile-ink:var(--empty-ink)}
+ .form-panel .field[data-field-state=missing] :is(input:not([type=checkbox]),select,textarea){border-color:var(--empty-ink)!important;background-color:color-mix(in srgb,var(--empty-ink) 10%,var(--control))!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--empty-ink) 14%,transparent)!important}
+ .form-panel .field[data-field-state=missing]:not(:focus-within) .field-input{animation:field-shake .45s ease-in-out 2}
+ .form-panel .field[data-field-state=missing]:not(:focus-within) .field-input::after{opacity:1;animation:field-run 1.1s linear infinite}
+ .form-panel .field[data-field-state=missing]>span{color:var(--empty-ink)!important}
+
+ /* Filled: light green box, solid green tile with a white icon; the tile pops and a shine sweeps across */
+ .form-panel .field[data-field-state=filled]{--tile-ink:var(--fill-ink)}
+ .form-panel .field[data-field-state=filled] :is(input:not([type=checkbox]),select,textarea){border-color:color-mix(in srgb,var(--fill-ink) 45%,var(--line))!important;border-left-color:var(--fill-ink)!important;background-color:var(--fill-bg)!important;background-image:linear-gradient(100deg,transparent 35%,rgb(255 255 255 / .75) 50%,transparent 65%)!important;background-size:250% 100%!important;background-position:120% 0!important;background-repeat:no-repeat!important;animation:field-shine .8s ease-out .05s 1!important}
+ .form-panel .field[data-field-state=filled] .field-input::before{background:var(--fill-ink);box-shadow:0 2px 6px color-mix(in srgb,var(--fill-ink) 35%,transparent);animation:tile-pop .5s cubic-bezier(.3,1.6,.5,1) 1}
+ .form-panel .field[data-field-state=filled] .field-input>svg{color:#fff!important;animation:icon-pop .5s cubic-bezier(.3,1.6,.5,1) 1!important}
+ [data-theme=dark] .form-panel .field[data-field-state=filled] .field-input>svg{color:#0d2418!important}
+
+ /* Computed (read-only) boxes stay calm and grey */
+ .form-panel .field[data-field-state=computed]{--tile-ink:var(--muted)}
+
+ /* Typing: accent ring, tile in the accent colour, icon does its move once */
+ .form-panel .field:focus-within{--tile-ink:var(--accent)}
+ .form-panel .field :is(input:not([type=checkbox]),select,textarea):focus{border-color:var(--accent)!important;border-left-color:var(--accent)!important;background-color:var(--control)!important;background-image:none!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 16%,transparent)!important;animation:none!important}
+ .form-panel .field:focus-within .field-input::before{background:color-mix(in srgb,var(--accent) 16%,transparent);animation:none}
+ .form-panel .field:focus-within .field-input>svg{color:var(--accent)!important;animation:var(--icon-move) .7s ease-in-out 1!important}
+ .form-panel .field:hover:not(:focus-within) .field-input>svg{animation:var(--icon-move) .7s ease-in-out 1!important}
+
+ /* Each kind of box has its own icon move */
+ .form-panel .field{--icon-move:icon-pop-soft}
+ .form-panel .field[data-field-kind=name]{--icon-move:icon-nod}
+ .form-panel .field[data-field-kind=place]{--icon-move:icon-hop}
+ .form-panel .field[data-field-kind=date]{--icon-move:icon-flip}
+ .form-panel .field[data-field-kind=amount]{--icon-move:icon-coin}
+ .form-panel .field[data-field-kind=receipt]{--icon-move:icon-wiggle}
+ .form-panel .fields>.field:nth-child(3n+2) .field-input>svg,.form-panel .fields>.field:nth-child(3n+2) .field-input::after{animation-delay:-1.3s!important}
+ .form-panel .fields>.field:nth-child(3n+3) .field-input>svg,.form-panel .fields>.field:nth-child(3n+3) .field-input::after{animation-delay:-2.6s!important}
+ .form-panel .field:focus-within .field-input>svg,.form-panel .field:hover .field-input>svg{animation-delay:0s!important}
+
+ /* Status dot next to each label */
+ .form-panel .field[data-field-state=empty] .field-status-light,.field-status-key .status-empty{background:var(--empty-ink,#d2463b)!important;border-color:var(--empty-ink,#d2463b)!important;opacity:1!important}
+ .form-panel .field[data-field-state=filled] .field-status-light,.field-status-key .status-filled{background:var(--fill-ink,#239a5b)!important;border-color:var(--fill-ink,#239a5b)!important}
+
+ [data-page-hidden=true] .form-panel :is(.field-input,.field-input::before,.field-input::after,.field-input>svg,.field input,.field select,.field textarea){animation-play-state:paused!important}
+ [data-motion=off] .form-panel :is(.field-input,.field-input::before,.field-input::after,.field-input>svg,.field input,.field select,.field textarea){animation:none!important}
+ [data-motion=off] .form-panel .field[data-field-state=empty] .field-input::after{opacity:0}
+}
+/* Smaller boxes on short laptop screens and phones */
+@media screen and (min-width:721px) and (max-height:740px){.form-panel .field{--tile:20px}.form-panel .field :is(input:not([type=checkbox]),select,textarea){padding-left:31px!important}}
+@media screen and (min-width:721px) and (max-height:650px){.form-panel .field{--tile:17px}.form-panel .field :is(input:not([type=checkbox]),select,textarea){padding-left:27px!important}}
+@media screen and (max-width:720px){.form-panel .field{--tile:22px}.form-panel .field :is(input:not([type=checkbox]),select,textarea){padding-left:33px!important}}
+@media screen and (prefers-reduced-motion:reduce){.form-panel :is(.field-input,.field-input::before,.field-input::after,.field-input>svg,.field input,.field select,.field textarea){animation:none!important}.form-panel .field-input::after{opacity:0!important}}
+@keyframes field-run{0%{translate:0 0;opacity:0}18%,82%{opacity:.8}100%{translate:185% 0;opacity:0}}
+@keyframes field-shine{from{background-position:120% 0}to{background-position:-30% 0}}
+@keyframes field-shake{0%,100%{translate:0}25%{translate:-3px 0}75%{translate:3px 0}}
+@keyframes tile-pop{0%{scale:.6}60%{scale:1.18}100%{scale:1}}
+@keyframes icon-pop{0%{scale:.4;rotate:-25deg}60%{scale:1.2;rotate:8deg}100%{scale:1;rotate:0deg}}
+@keyframes icon-pop-soft{0%,72%,100%{scale:1}80%{scale:1.22}88%{scale:.94}}
+@keyframes icon-nod{0%,70%,100%{rotate:0deg}77%{rotate:-14deg}84%{rotate:10deg}91%{rotate:-4deg}}
+@keyframes icon-hop{0%,68%,100%{translate:0 0}76%{translate:0 -4px}84%{translate:0 0}89%{translate:0 -1.5px}}
+@keyframes icon-flip{0%,70%,100%{rotate:y 0deg}88%{rotate:y 360deg}}
+@keyframes icon-coin{0%,66%,100%{rotate:y 0deg}90%{rotate:y 720deg}}
+@keyframes icon-wiggle{0%,70%,100%{rotate:0deg}75%{rotate:-12deg}80%{rotate:12deg}85%{rotate:-8deg}90%{rotate:6deg}95%{rotate:0deg}}
+
+/* Import CSV dialog */
+.import-summary{display:grid;gap:10px;font-size:14px}
+.import-summary ul{margin:0;padding-left:18px;display:grid;gap:4px}
+.import-summary small{color:var(--muted)}
+.import-summary .import-errors{color:#a2580d}
+
+/* Statement: "Paying the 2026 rental now?" as two clear choices with a note underneath. */
+@media screen{
+ .form-panel .field.field-choice{grid-column:span 2}
+ .form-panel .field-choice .field-input{display:flex;align-items:stretch;min-height:35px;padding:3px 3px 3px 36px;border:1.5px solid color-mix(in srgb,var(--fill-ink) 40%,var(--line));border-left:3px solid var(--fill-ink);border-radius:5px;background:var(--fill-bg)}
+ .form-panel .field-choice[data-field-state=filled]:has(.no.on) .field-input{--tile-ink:var(--muted);border-color:var(--line);border-left-color:var(--muted);background:var(--control)}
+ .form-panel .field-choice:has(.no.on) .field-input::before{background:color-mix(in srgb,var(--muted) 14%,transparent)!important;box-shadow:none!important}
+ .form-panel .field-choice:has(.no.on) .field-input>svg{color:var(--muted)!important}
+ .year-choice{display:grid;grid-template-columns:1fr 1fr;gap:3px;flex:1;min-width:0}
+ .year-choice button{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-width:0;padding:4px 6px;border:1px solid transparent;border-radius:4px;background:transparent;color:var(--muted);font:inherit;font-size:12.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;transition:background-color .2s ease,color .2s ease,border-color .2s ease,box-shadow .2s ease}
+ .year-choice button svg{flex:none;opacity:.55}
+ .year-choice button:hover:not(:disabled):not(.on){background:color-mix(in srgb,var(--ink) 6%,transparent);color:var(--ink)}
+ .year-choice button.on.yes{background:var(--fill-ink);color:#fff;box-shadow:0 1px 4px color-mix(in srgb,var(--fill-ink) 40%,transparent)}
+ .year-choice button.on.no{background:var(--surface,#fff);color:var(--ink);border-color:var(--line);box-shadow:0 1px 3px rgb(20 15 35 / .08)}
+ .year-choice button.on svg{opacity:1}
+ .year-choice button.on.yes svg{animation:icon-pop .45s cubic-bezier(.3,1.6,.5,1) 1}
+ .year-choice button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+ .form-panel .field-note{display:block;margin-top:3px;font-size:11.5px;line-height:15px;color:var(--muted);white-space:normal}
+ .form-panel .field-choice:has(.yes.on) .field-note{color:var(--fill-ink);font-weight:600}
+ [data-motion=off] .year-choice button svg{animation:none!important}
+}
+@media screen and (max-width:720px){.year-choice button{font-size:13px;padding:6px 4px}.form-panel .field-choice .field-input{padding-left:33px}}
