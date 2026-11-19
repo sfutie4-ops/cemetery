@@ -1,5 +1,5 @@
-import {editStatus,sameOrigin} from '../../../lib/edit-access';
-import {database} from '../../../lib/storage';
+import {editStatus,sameOrigin,sessionHash,sessionQuery,accessFor} from '../../../lib/edit-access';
+import {database,readOnly} from '../../../lib/storage';
 import {formNames, transfer, clearFields, today, cleanText, mobileText, type Fields} from '../../../lib/model';
 
 import {promissorySheet,promissoryRecord,promissoryFields,isPromissory,refreshPromissoryText} from '../../../lib/promissory';
@@ -29,8 +29,10 @@ export async function GET(request:Request) {
   try {
     const url=new URL(request.url),year=Number(url.searchParams.get('year')??2026),month=url.searchParams.get('month')??today().slice(0,7),scope=(url.searchParams.get('scope')??'all') as CemeteryScope;
     if(!Number.isInteger(year)||year<2000||year>2100||!/^\d{4}-(0[1-9]|1[0-2])$/.test(month)||Number(month.slice(0,4))<2000||Number(month.slice(0,4))>2100||!['all','municipal','aranda'].includes(scope))return json({error:'Invalid report filters.'},400);
-    const accessRequest=editStatus(request),db = database();
-    const [access,[drafts,records]] = await Promise.all([accessRequest,db.batch([db.prepare('SELECT * FROM drafts'),db.prepare('SELECT * FROM records WHERE NOT EXISTS (SELECT 1 FROM record_deletions WHERE record_id=records.id) ORDER BY sheet,number')])]);
+    // Session, drafts and records are read together in one round trip.
+    const token=await sessionHash(request),db=database();
+    const [drafts,records,session]=await readOnly([db.prepare('SELECT * FROM cemetery.drafts'),db.prepare('SELECT * FROM cemetery.records r WHERE NOT EXISTS (SELECT 1 FROM cemetery.record_deletions d WHERE d.record_id=r.id) ORDER BY r.sheet,r.number'),...(token?[sessionQuery(token)]:[])]);
+    const access=accessFor(session?.results[0]);
     return json({drafts: Object.fromEntries(drafts.results.map((row: any) => [row.name, {
       fields: JSON.parse(row.fields), updatedAt: row.updated_at, revision: row.revision,
     }])), records: access.canViewTransmittal?records.results.map(storedRecord):[],recordsAccessible:access.canViewTransmittal,...(!access.canViewTransmittal?{publicReports:publicReports(records.results.map(storedRecord),{year,month,scope})}:{})});

@@ -49,6 +49,26 @@ async function execute(statements: Statement[]): Promise<{results: any[]; meta: 
   }) as Promise<{results: any[]; meta: {changes: number}}[]>;
 }
 
+// Reads skip BEGIN / SET / COMMIT and go to the database as one message, so loading records is a single
+// network round trip instead of four or more. Queries passed here must name their tables with the
+// cemetery schema. Values are written into the text as safely quoted literals (simple query protocol).
+function literal(value: unknown) {
+  if (typeof value === 'number' && Number.isFinite(value)) return String(value);
+  if (typeof value === 'string' && !value.includes('\0')) return "'" + value.replace(/'/g, "''") + "'";
+  throw new Error('Invalid database parameters.');
+}
+export async function readOnly(statements: Statement[]) {
+  const text = statements.map(statement => {
+    let index = 0;
+    const query = statement.query.replace(/\?/g, () => literal(statement.parameters[index++]));
+    if (index !== statement.parameters.length) throw new Error('Invalid database parameters.');
+    return query;
+  }).join(';\n');
+  const result: any = await pool().unsafe(text);
+  const sets: any[] = statements.length === 1 ? [result] : result;
+  return sets.map((rows: any) => ({results: [...rows], meta: {changes: rows.count}}));
+}
+
 export function database() {
   return {prepare: (query: string) => new Statement(query), batch: execute};
 }

@@ -1,4 +1,4 @@
-import {database} from './storage';
+import {database,readOnly} from './storage';
 const cookieName='cemetery_admin';
 const iterations=100000;
 // A fixed dummy hash keeps unknown-user checks comparable without copying old credentials.
@@ -15,14 +15,18 @@ export function sameOrigin(request:Request){
  const origin=request.headers.get('origin');
  return (!origin||origin===new URL(request.url).origin)&&request.headers.get('sec-fetch-site')!=='cross-site';
 }
-async function sessionHash(request:Request){
+export async function sessionHash(request:Request){
  const token=request.headers.get('cookie')?.split(';').map(s=>s.trim()).find(s=>s.startsWith(cookieName+'='))?.slice(cookieName.length+1);
  return token&&/^[a-f0-9]{64}$/.test(token)?digest(token):null;
 }
+// Admin session lookup, written with the schema so it can be sent alongside other reads.
+export function sessionQuery(token:string){return database().prepare('SELECT u.username,u.name FROM cemetery.admin_sessions s JOIN cemetery.admin_users u ON u.username=s.username WHERE s.token_hash=? AND s.revision=u.revision AND s.expires_at>?').bind(token,Date.now())}
+export function accessFor(user:{username:string;name:string}|null|undefined){
+ return {role:user?'admin':'guest',username:user?.username??null,clerkName:user?.name??null,canEdit:true,canViewTransmittal:!!user} as const;
+}
 export async function editStatus(request:Request){
- const token=await sessionHash(request),now=Date.now();
- const user=token?await database().prepare('SELECT u.username,u.name FROM admin_sessions s JOIN admin_users u ON u.username=s.username WHERE s.token_hash=? AND s.revision=u.revision AND s.expires_at>?').bind(token,now).first():null;
- return {role:user?'admin':'guest',username:user?.username??null,clerkName:user?.name??null,canEdit:true,canViewTransmittal:!!user};
+ const token=await sessionHash(request);
+ return accessFor(token?(await readOnly([sessionQuery(token)]))[0].results[0]:null);
 }
 function sessionCookie(token:string,seconds=43200){return `${cookieName}=${token}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${seconds}`}
 export async function loginAdmin(request:Request,username:string,password:string){
