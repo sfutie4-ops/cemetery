@@ -1,11 +1,13 @@
 import postgres from 'postgres';
+import {rootCertificates} from 'node:tls';
+import {SUPABASE_ROOT_CA} from './supabase-ca';
 
 let connection: ReturnType<typeof postgres> | undefined;
 function pool() {
   const url = process.env.DATABASE_URL;
   if (!url) throw new Error('Database connection is not configured.');
   return connection ??= postgres(url, {
-    max: 2, prepare: false, ssl: 'verify-full',
+    max: 2, prepare: false, ssl: {ca: [SUPABASE_ROOT_CA, ...rootCertificates], rejectUnauthorized: true},
     idle_timeout: 60, connect_timeout: 15,
   });
 }
