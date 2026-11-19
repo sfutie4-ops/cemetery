@@ -1,9 +1,9 @@
-// Decorative idle animation: after five idle minutes a small tomb opens and a skeleton
+// Decorative idle animation: after two idle minutes a small tomb opens and a skeleton
 // walks out pulling a toy car on a rope. Any activity sends them home and the lid closes.
 // Pure DOM so it never touches app state. The layer ignores all pointer and keyboard input.
 
 type State = 'resting' | 'tremble' | 'opening' | 'emerging' | 'roaming' | 'returning' | 'closing' | 'lidclose';
-const IDLE_MS = 300000;
+const IDLE_MS = 120000;
 const IVORY = '#E9DDC4', IVORY_BACK = '#CFC3AA', PLUM = '#34143F', PLUM_BLACK = '#17121F', SLATE = '#5D5965', BRASS = '#B89B66', ROPE = '#AA8C62';
 let mounted = false;
 
