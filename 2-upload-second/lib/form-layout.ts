@@ -3,7 +3,7 @@ export type InputField = {ref: string; label: string; fullLabel?: string; comput
 const labels: Record<string, Record<string, string>> = {
   'burial permit': {O2: 'Cemetery', O3: 'Classification', O4: 'Applicant name', O5: 'Sitio', O6: 'Barangay', O7: 'Deceased last name', O8: 'Deceased first name', O9: 'Date of death', O10: 'O.R. number', O13: 'Rental years', O14: 'Arrears name', O15: 'Arrears amount', O16: 'Arrears years', O20: 'Discount ID number', O22: 'Senior citizen?', O31: 'Remaining balance', O32: 'Notes'},
   exhumation: {AJ2: 'Cemetery', AJ3: 'Informant name', AJ4: 'Sitio', AJ5: 'Barangay', AJ6: 'Deceased last name', AJ7: 'Deceased first name', AJ8: 'Date of death', AJ9: 'Replacement name', AJ10: 'Replacement death date', AJ11: 'O.R. number'},
-  STATEMENT: {P2: 'Cemetery', P3: 'Classification', P4: 'Deceased last name', P5: 'Deceased first name', P6: 'Applicant name', P7: 'Sitio', P8: 'Barangay', P9: 'Include current year 2026', P10: 'Arrears amount', P11: 'Arrears years', P12: 'Advance years', P13: 'O.R. number', P15: 'Balance', P16: 'Due date'},
+  STATEMENT: {P2: 'Cemetery', P3: 'Classification', P4: 'Deceased last name', P5: 'Deceased first name', P6: 'Applicant name', P7: 'Sitio', P8: 'Barangay', P9: 'Paying the 2026 rental now?', P10: 'Arrears amount', P11: 'Arrears years', P12: 'Advance years', P13: 'O.R. number', P15: 'Balance', P16: 'Due date'},
   TRANSFER: {M2: 'From cemetery', M3: 'To cemetery', M4: 'Deceased last name', M5: 'Deceased first name', M6: 'Informant name', M7: 'Sitio', M8: 'Barangay', M9: 'Date of death', M10: 'O.R. number'},
 };
 const hints: Record<string, string> = {

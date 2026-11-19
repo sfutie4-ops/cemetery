@@ -32,8 +32,8 @@ export default function TransmittalImport({sheet,records,disabled,onDone}:{sheet
  }
  const open=plan!==null;
  return <>
-  <button type="button" className="secondary" disabled={disabled} title={`Add rows from an exported ${label} transmittal CSV`} onClick={()=>input.current?.click()}><Upload size={16}/>Import CSV</button>
-  <input ref={input} type="file" accept=".csv,text/csv" hidden onChange={event=>void choose(event.target.files?.[0])}/>
+  <button type="button" className="secondary" disabled={disabled} title={`Add rows from an exported ${label} transmittal CSV, or from a PC backup (cemetery-backup.json)`} onClick={()=>input.current?.click()}><Upload size={16}/>Import CSV</button>
+  <input ref={input} type="file" accept=".csv,text/csv,.json,application/json" hidden onChange={event=>void choose(event.target.files?.[0])}/>
   <Dialog open={open} onOpenChange={value=>{if(!value&&progress===null){setPlan(null);setError('')}}}>
    <DialogContent className="import-modal" aria-describedby="import-summary">
     <DialogHeader><DialogTitle>Import into {label} transmittal</DialogTitle></DialogHeader>

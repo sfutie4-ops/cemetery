@@ -1,28 +1,20 @@
 'use client';
 import {Fragment,useState,useEffect,useMemo,useRef} from 'react';
+import dynamic from 'next/dynamic';
 import {workbook,formNames,calculate,burialExhumationFields,summary,money,num,cleanText,dateText,dateInput,today,recordMobile,type Fields,type RecordRow} from '../lib/model';
 import MobileContact from '../components/mobile-contact';
-import PcBackup from '../components/pc-backup';
 import {permitForm,reopenPermitFields} from '../lib/reopen-permit';
-import DueContacts from '../components/due-contacts';
-import PromissoryTransmittal from '../components/promissory-transmittal';
 import {promissoryCopy,promissoryFields,refreshPromissoryText} from '../lib/promissory';
 import Paper,{Bold} from '../components/cemetery-paper';
-import DailyCollection from '../components/daily-collection';
 import DashboardOverview from '../components/dashboard-overview';
 import CemeterySidebar from '../components/cemetery-sidebar';
-import SiteComments from '../components/site-comments';
-import ReceiptReminder from '../components/receipt-reminder';
-import TombIdle from '../components/tomb-idle';
 import {missingReceiptText} from '../lib/receipt-reminders';
 import FormReviewDialog,{type ReviewIntent} from '../components/form-review-dialog';
-import PumpkinHelper from '../components/pumpkin-helper';
 import {reviewForm,filled} from '../lib/form-review';
 import {cemeteryRecords,scopeLabel,type CemeteryScope} from '../lib/daily-collection';
 import CemeterySettings from '../components/cemetery-settings';
 import TransmittalAccess from '../components/transmittal-access';
 import AccessChoice from '../components/access-choice';
-import TransmittalImport from '../components/transmittal-import';
 import TransmittalSheet from '../components/transmittal-sheet';
 import TransmittalTotals from '../components/transmittal-totals';
 import {numberRows,transmittalKind,totalValues} from '../lib/transmittal';
@@ -33,6 +25,16 @@ import {openPrintView} from '../lib/print';
 import {excelTransmittal,copyTransmittal} from '../lib/transmittal-export';
 import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogFooter} from '../components/ui/dialog';
 import {FileText,Printer,RefreshCw,BookOpen,Landmark,Save,Download,Search,X,UserRound,MapPin,CalendarDays,Coins,Tag,ShieldCheck,FilePenLine,Send,CheckCircle2,NotepadText,Copy,Trash2,AlertCircle,Settings,MessageSquare,ReceiptText,Phone} from 'lucide-react';
+// Parts that are not needed for the first screen load separately, after the page is up.
+const PcBackup=dynamic(()=>import('../components/pc-backup'),{ssr:false});
+const DueContacts=dynamic(()=>import('../components/due-contacts'),{ssr:false});
+const PromissoryTransmittal=dynamic(()=>import('../components/promissory-transmittal'),{ssr:false});
+const DailyCollection=dynamic(()=>import('../components/daily-collection'),{ssr:false});
+const SiteComments=dynamic(()=>import('../components/site-comments'),{ssr:false});
+const ReceiptReminder=dynamic(()=>import('../components/receipt-reminder'),{ssr:false});
+const TombIdle=dynamic(()=>import('../components/tomb-idle'),{ssr:false});
+const PumpkinHelper=dynamic(()=>import('../components/pumpkin-helper'),{ssr:false});
+const TransmittalImport=dynamic(()=>import('../components/transmittal-import'),{ssr:false});
 const titles:Record<string,string>={SUMMARY:'Dashboard','burial permit':'Burial permit',exhumation:'Exhumation permit',STATEMENT:'Statement of account',TRANSFER:'Transfer of remains',PROMISSORY:'Promissory note','transmital promissory':'Promissory transmittal','transmital municipal':'Municipal transmittal','transmital Aranda':'Aranda transmittal'};
 const nameKeys:Record<string,string[]>={'burial permit':['O4','O7','O8','O14'],exhumation:['AJ3','AJ6','AJ7','AJ9'],STATEMENT:['P4','P5','P6'],TRANSFER:['M4','M5','M6'],PROMISSORY:['PN3','PN13','PN11']};
 function stamp(value:string){return value?new Date(value).toLocaleString('en-US',{timeZone:'Asia/Manila',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}):'—'}
@@ -44,12 +46,14 @@ function fieldGroups(name:string,values:Fields={}){
  personal.push('PH1');
  return [{title:'Applicant and cemetery details',Icon:UserRound,fields:all.filter(f=>personal.includes(f.ref))},{title:name==='exhumation'?'Replacement and payment details':'Account and payment details',Icon:Coins,fields:all.filter(f=>!personal.includes(f.ref)&&f.type!=='textarea')},{title:'Additional information',Icon:NotepadText,fields:all.filter(f=>f.type==='textarea')}].filter(group=>group.fields.length);
 }
-function Field({f,v,onChange,busy,needsReview=false}:{f:InputField;v:string|number|undefined;onChange:(v:string)=>void;busy:boolean;needsReview?:boolean}){
+// Plain-language note under the Statement's 2026 choice, with the amount it adds.
+function yearNote(values:Fields){const rental=values.P3==='Perpetual'?500:values.P3==='Niche'?250:0;if(!filled(values.P9))return 'The 2026 rental is not charged on this statement.';return rental?'₱'+money(rental)+' '+String(values.P3).toLowerCase()+' rental for 2026 is added to the total.':'Choose the Classification to see the 2026 amount.'}
+function Field({f,v,onChange,busy,needsReview=false,note}:{f:InputField;v:string|number|undefined;onChange:(v:string)=>void;busy:boolean;needsReview?:boolean;note?:string}){
  const Icon=fieldIcon(f);
  const value=f.type==='date'?dateInput(v):typeof v==='string'?cleanText(v):v??'';
- const state=f.computed?'computed':needsReview?'missing':filled(value)?'filled':'empty';
+ const choice=f.type==='checkbox',state=f.computed?'computed':needsReview?'missing':choice||filled(value)?'filled':'empty',Root=choice?'div':'label';
  const kind=f.type==='date'||/date/i.test(f.label)?'date':/O\.R\./i.test(f.label)?'receipt':f.type==='number'||/amount|balance|years/i.test(f.label)?'amount':/name|clerk/i.test(f.label)?'name':/cemetery|sitio|barangay|address|location/i.test(f.label)?'place':'other';
- return <label data-comment-target={'field-'+f.ref} data-field-state={state} data-field-kind={kind} className={'field '+(f.computed?'computed ':'')+(f.type==='textarea'?'field-notes':f.type==='date'?'field-date':'')}><span title={f.fullLabel||f.label}>{f.label}{!f.computed&&<i className="field-status-light" aria-label={state==='missing'?'Review this detail':state==='filled'?'Has data':'Empty'} title={state==='missing'?'Review this detail':state==='filled'?'Has data':'Empty'}/>}</span><div className="field-input"><Icon size={16} aria-hidden="true"/>{f.type==='checkbox'?<input type="checkbox" name={f.ref} checked={filled(value)} disabled={busy} style={{width:22,height:22}} onChange={e=>onChange(e.target.checked?'2026':'')}/>:f.options?<select name={f.ref} value={value} style={{fontWeight:f.bold?700:undefined}} disabled={busy} onChange={e=>onChange(e.target.value)}><option value="">Select…</option>{f.options.map(option=><option key={option}>{option}</option>)}</select>:f.type==='textarea'?<textarea name={f.ref} rows={1} maxLength={400} placeholder={f.placeholder} value={value} readOnly={busy} onChange={e=>onChange(e.target.value)}/>:<input name={f.ref} placeholder={f.computed?undefined:f.placeholder} list={f.suggestions?'suggest-'+f.ref:undefined} type={f.type??'text'} min={f.type==='number'?0:undefined} step={f.type==='number'?'any':undefined} maxLength={f.type==='tel'?40:f.type==='text'?160:undefined} inputMode={f.type==='tel'?'tel':undefined} autoComplete={f.type==='tel'?'tel':undefined} value={value} readOnly={busy||f.computed} style={{fontWeight:f.bold?700:undefined}} onChange={e=>onChange(e.target.value)}/>} {f.suggestions&&<datalist id={'suggest-'+f.ref}>{f.suggestions.map(suggestion=><option key={suggestion} value={suggestion}/>)}</datalist>}</div></label>
+ return <Root data-comment-target={'field-'+f.ref} data-field-state={state} data-field-kind={kind} className={'field '+(f.computed?'computed ':'')+(f.type==='textarea'?'field-notes':f.type==='date'?'field-date':choice?'field-choice':'')}><span title={f.fullLabel||f.label}>{f.label}{!f.computed&&<i className="field-status-light" aria-label={state==='missing'?'Review this detail':state==='filled'?'Has data':'Empty'} title={state==='missing'?'Review this detail':state==='filled'?'Has data':'Empty'}/>}</span><div className="field-input"><Icon size={16} aria-hidden="true"/>{choice?<div className="year-choice" role="radiogroup" aria-label={f.label}><button type="button" role="radio" name={f.ref} aria-checked={filled(value)} className={filled(value)?'on yes':''} disabled={busy} onClick={()=>onChange('2026')}><CheckCircle2 size={15} aria-hidden="true"/>Yes, include 2026</button><button type="button" role="radio" aria-checked={!filled(value)} className={!filled(value)?'on no':''} disabled={busy} onClick={()=>onChange('')}><X size={15} aria-hidden="true"/>No, not this year</button></div>:f.options?<select name={f.ref} value={value} style={{fontWeight:f.bold?700:undefined}} disabled={busy} onChange={e=>onChange(e.target.value)}><option value="">Select…</option>{f.options.map(option=><option key={option}>{option}</option>)}</select>:f.type==='textarea'?<textarea name={f.ref} rows={1} maxLength={400} placeholder={f.placeholder} value={value} readOnly={busy} onChange={e=>onChange(e.target.value)}/>:<input name={f.ref} placeholder={f.computed?undefined:f.placeholder} list={f.suggestions?'suggest-'+f.ref:undefined} type={f.type??'text'} min={f.type==='number'?0:undefined} step={f.type==='number'?'any':undefined} maxLength={f.type==='tel'?40:f.type==='text'?160:undefined} inputMode={f.type==='tel'?'tel':undefined} autoComplete={f.type==='tel'?'tel':undefined} value={value} readOnly={busy||f.computed} style={{fontWeight:f.bold?700:undefined}} onChange={e=>onChange(e.target.value)}/>} {f.suggestions&&<datalist id={'suggest-'+f.ref}>{f.suggestions.map(suggestion=><option key={suggestion} value={suggestion}/>)}</datalist>}</div>{note&&<small className="field-note">{note}</small>}</Root>
 }
 export default function Page(){
  const [tab,setTab]=useState('SUMMARY'),[year,setYear]=useState(2026),[query,setQuery]=useState(''),[month,setMonth]=useState(''),[missing,setMissing]=useState(false),[edit,setEdit]=useState<RecordRow|null>(null),[history,setHistory]=useState<RecordRow|null>(null),[formView,setFormView]=useState<'input'|'preview'>('input'),[deleting,setDeleting]=useState<RecordRow|null>(null),[copyText,setCopyText]=useState<string|null>(null);
@@ -142,7 +146,7 @@ export default function Page(){
  <section className="form-panel"><div className="form-heading"><b><FilePenLine size={19}/>{titles[tab]} information</b><small><CheckCircle2 size={14}/>{reopened?'Save to update this record':'Changes save automatically'}</small></div>
  {tab==='PROMISSORY'&&<div className="promissory-copy screen"><label>Copy details from <select aria-label="Copy promissory details from" value={promiseSource} onChange={e=>setPromiseSource(e.target.value)}>{formNames.filter(name=>name!=='PROMISSORY').map(name=><option key={name} value={name}>{titles[name]}</option>)}</select></label><button className="secondary" disabled={locked||!!forms.PROMISSORY.conflict||!!forms[promiseSource].conflict} onClick={()=>copyPromissoryDetails()}><Copy size={14}/>Copy details</button></div>}
  {forms[tab].conflict&&<div className="conflict" role="alert"><p>This form changed in another window. Your input is still here.</p><div><button className="secondary" onClick={()=>resolve(tab,true)}>Use latest version</button><button className="primary" onClick={()=>resolve(tab,false)}>Keep my input</button></div></div>}
- <div className="form-sections">{fieldGroups(tab,values).map(({title,Icon,fields})=><fieldset className="field-section" key={title}><legend><Icon size={17}/>{title}</legend><div className="fields">{fields.map(field=><Field key={field.ref} f={field} v={values[field.ref]??field.value} needsReview={reviewMarked&&formReview.issues.some(issue=>issue.ref===field.ref)} busy={busy||!canEdit} onChange={value=>update(field.ref,value)}/>)}</div></fieldset>)}</div>
+ <div className="form-sections">{fieldGroups(tab,values).map(({title,Icon,fields})=><fieldset className="field-section" key={title}><legend><Icon size={17}/>{title}</legend><div className="fields">{fields.map(field=><Field key={field.ref} f={field} v={values[field.ref]??field.value} note={field.ref==='P9'?yearNote(values):undefined} needsReview={reviewMarked&&formReview.issues.some(issue=>issue.ref===field.ref)} busy={busy||!canEdit} onChange={value=>update(field.ref,value)}/>)}</div></fieldset>)}</div>
  {tab==='burial permit'&&<div className="fee-summary"><span>Permit <b>₱ {money(values.O11)}</b></span><span>Rental <b>₱ {money(values.O12)}</b></span><span>Discount <b>₱ {money(values.O19)}</b></span><span>Approved <b>{dateText(values.O21,true)}</b></span></div>}
  <div className="total-strip"><b>{tab==='PROMISSORY'?'Amount promised':'Total amount payable'}</b><strong key={String(payable)} className="amount-live">₱ {money(payable)}</strong></div>
  <div className="save-status"><span className="field-status-key"><i className="status-filled"/>Has data <i className="status-empty"/>Empty {reviewMarked&&<><i className="status-review"/>Review</>}</span><span>{saving===tab?'Saving…':forms[tab].conflict?'Review conflicting versions':forms[tab].saveError?'Save failed · retry below':forms[tab].dirty?reopened?'Unsaved changes':'Waiting to save…':'Saved'}{forms[tab].updatedAt&&!forms[tab].dirty?' · '+stamp(forms[tab].updatedAt):''}</span></div>

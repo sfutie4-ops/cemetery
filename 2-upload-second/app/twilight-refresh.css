@@ -449,3 +449,25 @@
 .import-summary ul{margin:0;padding-left:18px;display:grid;gap:4px}
 .import-summary small{color:var(--muted)}
 .import-summary .import-errors{color:#a2580d}
+
+/* Statement: "Paying the 2026 rental now?" as two clear choices with a note underneath. */
+@media screen{
+ .form-panel .field.field-choice{grid-column:span 2}
+ .form-panel .field-choice .field-input{display:flex;align-items:stretch;min-height:35px;padding:3px 3px 3px 36px;border:1.5px solid color-mix(in srgb,var(--fill-ink) 40%,var(--line));border-left:3px solid var(--fill-ink);border-radius:5px;background:var(--fill-bg)}
+ .form-panel .field-choice[data-field-state=filled]:has(.no.on) .field-input{--tile-ink:var(--muted);border-color:var(--line);border-left-color:var(--muted);background:var(--control)}
+ .form-panel .field-choice:has(.no.on) .field-input::before{background:color-mix(in srgb,var(--muted) 14%,transparent)!important;box-shadow:none!important}
+ .form-panel .field-choice:has(.no.on) .field-input>svg{color:var(--muted)!important}
+ .year-choice{display:grid;grid-template-columns:1fr 1fr;gap:3px;flex:1;min-width:0}
+ .year-choice button{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-width:0;padding:4px 6px;border:1px solid transparent;border-radius:4px;background:transparent;color:var(--muted);font:inherit;font-size:12.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;transition:background-color .2s ease,color .2s ease,border-color .2s ease,box-shadow .2s ease}
+ .year-choice button svg{flex:none;opacity:.55}
+ .year-choice button:hover:not(:disabled):not(.on){background:color-mix(in srgb,var(--ink) 6%,transparent);color:var(--ink)}
+ .year-choice button.on.yes{background:var(--fill-ink);color:#fff;box-shadow:0 1px 4px color-mix(in srgb,var(--fill-ink) 40%,transparent)}
+ .year-choice button.on.no{background:var(--surface,#fff);color:var(--ink);border-color:var(--line);box-shadow:0 1px 3px rgb(20 15 35 / .08)}
+ .year-choice button.on svg{opacity:1}
+ .year-choice button.on.yes svg{animation:icon-pop .45s cubic-bezier(.3,1.6,.5,1) 1}
+ .year-choice button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+ .form-panel .field-note{display:block;margin-top:3px;font-size:11.5px;line-height:15px;color:var(--muted);white-space:normal}
+ .form-panel .field-choice:has(.yes.on) .field-note{color:var(--fill-ink);font-weight:600}
+ [data-motion=off] .year-choice button svg{animation:none!important}
+}
+@media screen and (max-width:720px){.year-choice button{font-size:13px;padding:6px 4px}.form-panel .field-choice .field-input{padding-left:33px}}

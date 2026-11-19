@@ -27,11 +27,19 @@ const norm=(value:unknown)=>cleanText(value).trim().replace(/\s+/g,' ').toUpperC
 // Same person, payment type, payment date and total = the same entry.
 export function entryKey(values:any[]){return [values[1],values[2],values[3],values[5]==='EXHUME'?'EXHUMATION':values[5],values[13],Number(values[11])||0].map(norm).join('|')}
 
+// The site's PC backup (cemetery-backup.json) holds every record with its transmittal name.
+function backupRows(text:string,sheet:string):string[][]|null{
+ if(!/^\s*\{/.test(text))return null;
+ let data:any;try{data=JSON.parse(text)}catch{throw new Error('This backup file could not be read.')}
+ if(!data||!Array.isArray(data.records))throw new Error('This is not a cemetery backup file.');
+ return data.records.filter((row:any)=>row&&row.sheet===sheet&&Array.isArray(row.values)).map((row:any)=>row.values.map((value:unknown)=>value==null?'':String(value)));
+}
+
 export function planImport(text:string,sheet:string,existing:RecordRow[]):ImportPlan{
  if(!SHEETS.includes(sheet))throw new Error('Open the Municipal or Aranda transmittal first.');
  const seen=new Set(existing.filter(row=>row.sheet===sheet).map(row=>entryKey(row.values)));
  const plan:ImportPlan={rows:[],duplicates:0,errors:[]};
- parseCsv(text).forEach((cells,index)=>{
+ (backupRows(text,sheet)??parseCsv(text)).forEach((cells,index)=>{
   const line=index+1,first=norm(cells[0]);
   if(first==='NO.'||first==='NO'||first==='TOTAL')return;
   const raw=Array.from({length:20},(_,column)=>cells[column]??'');
