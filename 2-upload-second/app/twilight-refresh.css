@@ -384,3 +384,9 @@
 @keyframes field-empty-stripes{to{background-position:20px 0}}
 @keyframes field-empty-glow{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--empty-ink) 0%,transparent)}50%{box-shadow:0 0 0 3px color-mix(in srgb,var(--empty-ink) 18%,transparent)}}
 @keyframes field-filled-sweep{from{background-position:120% 0}to{background-position:-30% 0}}
+
+/* Import CSV dialog */
+.import-summary{display:grid;gap:10px;font-size:14px}
+.import-summary ul{margin:0;padding-left:18px;display:grid;gap:4px}
+.import-summary small{color:var(--muted)}
+.import-summary .import-errors{color:#a2580d}
