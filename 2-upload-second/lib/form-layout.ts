@@ -8,7 +8,7 @@ const labels: Record<string, Record<string, string>> = {
 };
 const hints: Record<string, string> = {
   O4: 'Full name of applicant', O5: 'Sitio or Purok', O6: 'Barangay', O7: 'Apelyido sang patay', O8: 'Pangalan sang patay', O10: 'O.R. number on the receipt', O13: 'Number of years', O14: 'Name for the arrears', O15: 'Amount, e.g. 500', O16: 'Years, e.g. 2023-2025', O20: 'Senior / PWD ID number', O31: 'Amount, e.g. 250', O32: 'Other notes',
-  AJ3: 'Full name of informant', AJ4: 'Sitio or Purok', AJ5: 'Barangay', AJ6: 'Apelyido sang kalkalon', AJ7: 'Ngalan sang kalkalon', AJ9: 'Ngalan sang inugbulos', AJ11: 'O.R. number on the receipt',
+  OC1: 'Type the cemetery name', AJ3: 'Full name of informant', AJ4: 'Sitio or Purok', AJ5: 'Barangay', AJ6: 'Apelyido sang kalkalon', AJ7: 'Ngalan sang kalkalon', AJ9: 'Ngalan sang inugbulos', AJ11: 'O.R. number on the receipt',
   P4: 'Apelyido sang patay', P5: 'Pangalan sang patay', P6: 'Full name of applicant', P7: 'Sitio or Purok', P8: 'Barangay', P10: 'Amount, e.g. 500', P11: 'Years, e.g. 2023-2025', P12: 'Number of years', P13: 'O.R. number on the receipt', P15: 'Amount, e.g. 250',
   M2: 'Cemetery it comes from', M3: 'Cemetery it goes to', M4: 'Apelyido sang patay', M5: 'Pangalan sang patay', M6: 'Full name of informant', M7: 'Sitio or Purok', M8: 'Barangay', M10: 'O.R. number on the receipt',
   PH1: '09XX XXX XXXX', NT1: 'Notes for the transmittal. Not printed on the permit.',
@@ -25,6 +25,7 @@ export function inputFields(name: string): InputField[] {
     type: name==='STATEMENT'&&field.ref==='P9' ? 'checkbox' : dateRefs.includes(field.ref) ? 'date' : (numberRefs[name] ?? []).includes(field.ref) ? 'number' : ['O32','PN11'].includes(field.ref) ? 'textarea' : 'text',
   }));
   if(name==='burial permit')fields.splice(fields.findIndex((field:InputField)=>field.ref==='O14')+1,0,{ref:'O33',label:'Arrears date of death',fullLabel:'Date of death of the person named in Arrears name',type:'date',value:''});
+  if(name==='exhumation')fields.splice(fields.findIndex((field:InputField)=>field.ref==='AJ2')+1,0,{ref:'OC1',label:'Other cemetery name',fullLabel:'Type the cemetery name. OTHERS entries go to the Municipal transmittal.',type:'text',value:'',bold:true});
   if(name==='TRANSFER')fields.unshift({ref:'M12',label:'Transmittal cemetery',fullLabel:'Choose the Municipal or Aranda transmittal for this entry',type:'text',options:['MUNICIPAL','ARANDA'],value:''});
   if (name === 'STATEMENT') fields.push(
     {ref:'P18',label:'Clerk',type:'text',options:['GENAFER DELA CRUZ','MARVIN MIRALLES'],value:'GENAFER DELA CRUZ',bold:true},

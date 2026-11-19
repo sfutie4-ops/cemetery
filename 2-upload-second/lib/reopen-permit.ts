@@ -14,7 +14,8 @@ export function reopenPermitFields(row:RecordRow):Fields {
  const name=permitForm(row);if(!name)throw Error('Invalid permit type. Edit this entry in the transmittal instead.');
  if(name==='PROMISSORY')return promissoryFields(row);
  const f:Fields={...Object.fromEntries(Object.keys(defaultFields(name)).map(ref=>[ref,''])),...row.fields,PH1:recordMobile(row)},v=row.values;
- const text=(i:number)=>cleanText(v[i]).trim(),cem=row.sheet==='transmital Aranda'?'ARANDA':name==='exhumation'&&text(15).toUpperCase()==='OTHERS'?'OTHERS':'MUNICIPAL';
+ const text=(i:number)=>cleanText(v[i]).trim(),other=name==='exhumation'&&row.sheet!=='transmital Aranda'&&!['','MUNICIPAL','ARANDA'].includes(text(15).toUpperCase()),cem=row.sheet==='transmital Aranda'?'ARANDA':other?'OTHERS':'MUNICIPAL';
+ if(other)f.OC1=text(15).toUpperCase()==='OTHERS'?cleanText(f.OC1):text(15);
  const refs=name==='burial permit'?['O7','O8','O4','O5','O6','O10','O2']:name==='exhumation'?['AJ6','AJ7','AJ3','AJ4','AJ5','AJ11','AJ2']:name==='STATEMENT'?['P4','P5','P6','P7','P8','P13','P2']:['M4','M5','M6','M7','M8','M10','M12'];
  refs.slice(0,3).forEach((ref,i)=>{f[ref]=text(i+1)});f[refs[5]]=text(12);f[refs[6]]=cem;
  const currentAddress=transferAddress(name,f);

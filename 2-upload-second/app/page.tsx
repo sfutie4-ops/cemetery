@@ -39,7 +39,7 @@ function fieldIcon(f:InputField){
  return f.type==='tel'?Phone:f.type==='date'||/year|date/i.test(f.label)?CalendarDays:/name|citizen/i.test(f.label)?UserRound:/cemetery/i.test(f.label)?Landmark:/sitio|barangay|address/i.test(f.label)?MapPin:/classification|discount/i.test(f.label)?Tag:/amount|balance|fee/i.test(f.label)?Coins:f.type==='textarea'?NotepadText:FileText;
 }
 function fieldGroups(name:string,values:Fields={}){
- const all=inputFields(name).filter(field=>field.ref!=='O33'||cleanText(values.O14).trim()),personal=name==='PROMISSORY'?['PN2','PN3','PN4','PN5','PN13','PN17','PN16']:name==='burial permit'?['O2','O3','O4','O5','O6','O7','O8','O9']:name==='exhumation'?['AJ2','AJ3','AJ4','AJ5','AJ6','AJ7','AJ8']:name==='STATEMENT'?['P2','P3','P4','P5','P6','P7','P8']:['M12','M2','M3','M4','M5','M6','M7','M8','M9'];
+ const all=inputFields(name).filter(field=>(field.ref!=='O33'||cleanText(values.O14).trim())&&(field.ref!=='OC1'||cleanText(values.AJ2).trim()==='OTHERS')),personal=name==='PROMISSORY'?['PN2','PN3','PN4','PN5','PN13','PN17','PN16']:name==='burial permit'?['O2','O3','O4','O5','O6','O7','O8','O9']:name==='exhumation'?['AJ2','OC1','AJ3','AJ4','AJ5','AJ6','AJ7','AJ8']:name==='STATEMENT'?['P2','P3','P4','P5','P6','P7','P8']:['M12','M2','M3','M4','M5','M6','M7','M8','M9'];
  personal.push('PH1');
  return [{title:'Applicant and cemetery details',Icon:UserRound,fields:all.filter(f=>personal.includes(f.ref))},{title:name==='exhumation'?'Replacement and payment details':'Account and payment details',Icon:Coins,fields:all.filter(f=>!personal.includes(f.ref)&&f.type!=='textarea')},{title:'Additional information',Icon:NotepadText,fields:all.filter(f=>f.type==='textarea')}].filter(group=>group.fields.length);
 }

@@ -357,3 +357,30 @@
 @keyframes or-card{0%,100%{box-shadow:0 0 0 0 rgb(230 120 40 / 0)}50%{box-shadow:0 0 0 3px rgb(230 120 40 / .2)}}
 @keyframes row-located{0%,100%{box-shadow:inset 0 0 0 100vmax color-mix(in srgb,var(--accent) 0%,transparent)}50%{box-shadow:inset 0 0 0 100vmax color-mix(in srgb,var(--accent) 30%,transparent)}}
 @keyframes card-located{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 0%,transparent)}50%{box-shadow:0 0 0 5px color-mix(in srgb,var(--accent) 45%,transparent)}}
+
+/* Form inputs: square boxes. Empty = red with moving stripes; filled = light green, with a green sweep
+   when a value is first entered. Loaded last so it overrides the earlier rounded, bobbing style. */
+@media screen{
+ .field{--empty-ink:#cf3b30;--empty-bg:#fff2f1;--fill-ink:#2b9a5a;--fill-bg:#ecf9f0}
+ [data-theme=dark] .field{--empty-ink:#ff7b70;--empty-bg:rgb(255 90 80 / .12);--fill-ink:#5fd38f;--fill-bg:rgb(70 200 120 / .13)}
+ .field :is(input:not([type=checkbox]),select,textarea){border-radius:3px!important;border-width:1.5px;border-style:solid!important;scale:none!important;translate:none!important}
+ .field textarea{border-radius:3px!important}
+ .field:hover,.field:focus-within{scale:none!important;translate:none!important}
+ .field[data-field-state=empty]>.field-input>svg{animation:none!important}
+
+ .field[data-field-state=empty] :is(input:not([type=checkbox]),select,textarea){border-color:var(--empty-ink)!important;border-left-width:4px;background-color:var(--empty-bg)!important;background-image:repeating-linear-gradient(-45deg,color-mix(in srgb,var(--empty-ink) 9%,transparent) 0 7px,transparent 7px 14px)!important;background-size:20px 20px;box-shadow:none!important;animation:field-empty-stripes 1.1s linear infinite,field-empty-glow 2.2s ease-in-out infinite!important}
+ .field[data-field-state=missing] :is(input:not([type=checkbox]),select,textarea){border-color:var(--empty-ink)!important;border-left-width:4px;background-color:color-mix(in srgb,var(--empty-ink) 14%,var(--control))!important;background-image:repeating-linear-gradient(-45deg,color-mix(in srgb,var(--empty-ink) 16%,transparent) 0 7px,transparent 7px 14px)!important;background-size:20px 20px;animation:field-empty-stripes .7s linear infinite,field-empty-glow 1.1s ease-in-out infinite!important}
+ .field[data-field-state=missing]>span{color:var(--empty-ink)!important}
+ .field[data-field-state=filled] :is(input:not([type=checkbox]),select,textarea){border-color:var(--fill-ink)!important;border-left-width:4px;background-color:var(--fill-bg)!important;background-image:linear-gradient(100deg,transparent 30%,color-mix(in srgb,var(--fill-ink) 28%,transparent) 50%,transparent 70%)!important;background-size:250% 100%;background-position:120% 0;background-repeat:no-repeat;box-shadow:none!important;animation:field-filled-sweep .9s ease-out 1!important}
+ .field :is(input:not([type=checkbox]),select,textarea):focus{background-image:none!important;animation:none!important;border-color:var(--accent)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 16%,transparent)!important}
+
+ .field[data-field-state=empty] .field-status-light,.field-status-key .status-empty{background:var(--empty-ink)!important;border-color:var(--empty-ink)!important;opacity:1!important}
+ .field[data-field-state=filled] .field-status-light,.field-status-key .status-filled{background:var(--fill-ink)!important;border-color:var(--fill-ink)!important}
+
+ [data-page-hidden=true] .field :is(input,select,textarea){animation-play-state:paused!important}
+ [data-motion=off] .field :is(input,select,textarea){animation:none!important;background-image:none!important}
+}
+@media screen and (prefers-reduced-motion:reduce){.field :is(input,select,textarea){animation:none!important}}
+@keyframes field-empty-stripes{to{background-position:20px 0}}
+@keyframes field-empty-glow{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--empty-ink) 0%,transparent)}50%{box-shadow:0 0 0 3px color-mix(in srgb,var(--empty-ink) 18%,transparent)}}
+@keyframes field-filled-sweep{from{background-position:120% 0}to{background-position:-30% 0}}
