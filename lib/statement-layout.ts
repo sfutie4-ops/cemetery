@@ -32,7 +32,7 @@ export function statementLayout(source:any,input:Fields){
   const page=letterPage(),unit=page.contentHeight/705,left=(page.width-465*unit)/2;
   const x=(n:number)=>left+(n-30)*unit,y=(n:number)=>page.margin+(n-16)*unit;
   const values:Fields={...input,office:'OFFICE OF THE MAYOR',C13:'Assessment:',C33:'Clerk',I33:'Municipal Mayor',J27:'Payment',
-    E11:[input.P7?cleanText(input.P7).trim():'',input.P8?'Brgy. '+cleanText(input.P8).trim():'','Hinigaran, Negros Occidental'].filter(Boolean).join(', '),
+    E11:[cleanText(input.P7).trim()?'of '+cleanText(input.P7).trim():'',input.P8?'Brgy. '+cleanText(input.P8).trim():'','Hinigaran, Negros Occidental'].filter(Boolean).join(', '),
     C28:'Total amount\npayable',E28:'P',M23:dateText(input.M23,true),E37:dateText(input.E37,true)};
   const bold=new Set(['A6','A7','C13','J13','L13','M13','C28','E28','F28','J19','L19','M19','A32','I32','I38']);
   const underlined=new Set(['A6','A7','C13','E37','E38','E39']);
