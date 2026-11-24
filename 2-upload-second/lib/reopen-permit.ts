@@ -1,4 +1,4 @@
-import {cleanText,dateInput,defaultFields,formNames,num,recordMobile,transfer,type Fields,type RecordRow} from './model';
+import {cleanText,dateInput,defaultFields,formNames,num,placeText,recordMobile,transfer,type Fields,type RecordRow} from './model';
 import {isPromissory,promissoryFields} from './promissory';
 import {transmittalKind} from './transmittal';
 
@@ -40,7 +40,7 @@ export function reopenPermitFields(row:RecordRow):Fields {
 }
 function transferAddress(name:string,f:Fields){
  const s=(ref:string)=>cleanText(f[ref]).trim();
- return name==='burial permit'?s('O5')+', Brgy '+s('O6'):name==='exhumation'?s('AJ4')+', Brgy., '+s('AJ5'):name==='STATEMENT'?s('P7')+', Brgy. '+s('P8')+' Hin. Neg Occ.':s('M7')+', Brgy. '+s('M8');
+ return name==='burial permit'?placeText(s('O5'),s('O6')):name==='exhumation'?placeText(s('AJ4'),s('AJ5')):name==='STATEMENT'?placeText(s('P7'),s('P8'))+' Hin. Neg Occ.':placeText(s('M7'),s('M8'));
 }
 
 export function updatedPermit(row:RecordRow,fields:Fields):RecordRow {
