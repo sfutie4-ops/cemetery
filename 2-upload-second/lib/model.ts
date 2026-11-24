@@ -27,7 +27,7 @@ export function burialExhumationFields(f:Fields):Fields{
 }
 export function clearFields(name:string,f:Fields):Fields{if(name==='PROMISSORY')return promissoryDefaults();const out={...f};const prefix=name==='burial permit'?'O':name==='exhumation'?'AJ':name==='STATEMENT'?'P':'M';const rows=name==='burial permit'?[2,3,4,5,6,7,8,9,10,14,15,16,20,22,31,32,33]:name==='exhumation'?Array.from({length:10},(_,i)=>i+2):name==='STATEMENT'?[...Array.from({length:12},(_,i)=>i+2),15,16]:Array.from({length:9},(_,i)=>i+2);for(const r of rows)out[prefix+r]='';if(name==='STATEMENT')out.P9=statementYear;if(name==='TRANSFER')out.M12='';out.PH1='';out.NT1='';return out}
 export function calculate(name:string,f:Fields,day=today()):Fields{
- const o:Fields={...f};const s=(k:string)=>cleanText(f[k]).trim();const n=(k:string)=>num(f[k]);const rate=(c:string)=>c==='Perpetual'?500:c==='Niche'?250:0;const of=(k:string)=>s(k)?'of '+s(k):'';const dt=new Date(day+'T12:00:00Z');const given='              Given this  '+ordinal(dt.getUTCDate())+'  day';
+ const o:Fields={...f};const s=(k:string)=>cleanText(f[k]).trim();const n=(k:string)=>num(f[k]);const rate=(c:string)=>c==='Perpetual'?500:c==='Niche'?250:0;const of=(k:string)=>s(k)?s(k).replace(/^(of\s+)?/i,'of '):'';const dt=new Date(day+'T12:00:00Z');const given='              Given this  '+ordinal(dt.getUTCDate())+'  day';
  if(name==='burial permit'){
   const initial=n('O13')*rate(s('O3'));const discount=s('O22')==='Yes'?initial*.2:0;const rent=initial-discount;
   const arrears=n('O15'),arrearsLabel=arrears?'Add Arrears':'',arrearsNote=arrears&&s('O14')?'for '+s('O14'):'';
