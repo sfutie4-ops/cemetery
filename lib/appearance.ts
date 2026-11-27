@@ -1,4 +1,5 @@
 export const colorThemes = [
+  {id:'formal',label:'Formal',color:'#1d2940',detail:'#c5a86b'},
   {id:'blue',label:'Blue',color:'#2463b3',detail:'#c8ddf5'},
   {id:'teal',label:'Teal',color:'#087e76',detail:'#bfebe1'},
   {id:'violet',label:'Violet',color:'#7034a9',detail:'#e2cff4'},
@@ -18,17 +19,20 @@ export type Appearance = {
   designVersion:string;
 };
 
-export const defaultAppearance:Appearance={mode:'light',accent:'violet',motion:true,motionLevel:'balanced',particles:true,designVersion:'reference-v1'};
+export const designVersion='formal-v1';
+export const defaultAppearance:Appearance={mode:'light',accent:'formal',motion:true,motionLevel:'balanced',particles:false,designVersion};
 
 // Keep existing choices when adding new appearance controls; tolerate damaged storage.
 export function readAppearance(value:unknown):Appearance{
   const saved=value&&typeof value==='object'?value as Record<string,unknown>:{};
+  // Saved choices from before the Formal design switch to it once; later picks in Settings are kept.
+  const current=saved.designVersion===designVersion;
   return {
     ...defaultAppearance,
     mode:saved.mode==='dark'||saved.mode==='system'?saved.mode:'light',
-    accent:colorThemes.some(theme=>theme.id===saved.accent)?saved.accent as Appearance['accent']:defaultAppearance.accent,
+    accent:current&&colorThemes.some(theme=>theme.id===saved.accent)?saved.accent as Appearance['accent']:defaultAppearance.accent,
     motion:saved.motion!==false,
     motionLevel:saved.motionLevel==='calm'||saved.motionLevel==='lively'?saved.motionLevel:'balanced',
-    particles:saved.particles!==false,
+    particles:current?saved.particles===true:defaultAppearance.particles,
   };
 }

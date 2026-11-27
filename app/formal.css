@@ -1,0 +1,245 @@
+/* Formal theme — the default look.
+   Deep navy ink, warm ivory paper and an antique-gold accent. Hairline borders, small square corners,
+   serif headings, no glow, gradients or floating particles. Everything is scoped to
+   :root[data-accent=formal], so the older colour themes in Settings keep their own look.
+   Screen only: printed permits and transmittals are unchanged. */
+@media screen{
+ :root[data-accent=formal]{
+  --f-paper:#f5f3ee;--f-navy:#1d2940;--f-navy-deep:#131b2c;--f-gold:#a8874a;--f-gold-soft:#efe7d6;
+  --f-ok:#3f7a5c;--f-ok-soft:#f2f7f3;--f-empty:#a5483d;--f-empty-soft:#fbf5f3;
+  --f-serif:var(--font-formal,'Cormorant Garamond'),'Cormorant Garamond',Garamond,'Times New Roman',serif;
+  --f-radius:4px;--f-radius-lg:6px;--f-shadow:0 1px 2px rgb(16 22 35 / .04),0 1px 1px rgb(16 22 35 / .02);
+  --navy:var(--f-navy);--deep:var(--f-navy-deep);--teal:#8a6d35;--ink:#1b2333;--muted:#6b6f7a;--line:#e3ded3;
+  --background:var(--f-paper);--foreground:#1b2333;--surface:#fff;--surface-soft:#faf8f4;--control:#fff;
+  --accent:var(--f-navy);--accent-deep:var(--f-navy-deep);--accent-soft:#eef0f4;
+  --success-ink:var(--f-ok);--warning-ink:var(--f-empty);--shadow-surface:var(--f-shadow);
+  --sidebar-start:var(--f-navy-deep);--sidebar-end:var(--f-navy-deep);--font-inscription:var(--f-serif)
+ }
+ :root[data-accent=formal][data-theme=dark]{
+  --f-paper:#0e131b;--f-navy:#c5a86b;--f-navy-deep:#b29355;--f-gold:#c5a86b;--f-gold-soft:#2a271f;
+  --f-ok:#7dbb98;--f-ok-soft:rgb(125 187 152 / .07);--f-empty:#e08a7d;--f-empty-soft:rgb(224 138 125 / .07);
+  --f-shadow:0 1px 2px rgb(0 0 0 / .3);
+  --ink:#ece8df;--muted:#9ba2ae;--line:#283041;--surface:#151b26;--surface-soft:#1a212e;--control:#121823;
+  --accent:#c5a86b;--accent-deep:#b29355;--accent-soft:#222a38;--teal:#c5a86b;
+  --sidebar-start:#0a0e15;--sidebar-end:#0a0e15
+ }
+
+ /* Page */
+ :root[data-accent=formal] body{background:var(--f-paper)!important;color:var(--ink);letter-spacing:.005em}
+ :root[data-accent=formal] .shell>main::before,:root[data-accent=formal] .sidebar-art,:root[data-accent=formal] :is(.site-atmosphere,.seasonal-atmosphere){display:none!important}
+
+ /* Sidebar */
+ :root[data-accent=formal] .shell>aside{background:var(--f-navy-deep)!important;border-right:1px solid rgb(197 168 107 / .22);box-shadow:none}
+ :root[data-accent=formal][data-theme=dark] .shell>aside{background:#0a0e15!important;border-right-color:#1f2633}
+ :root[data-accent=formal] .reference-brand{padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid rgb(255 255 255 / .08)}
+ :root[data-accent=formal] .brand-emblem{color:#c5a86b}
+ :root[data-accent=formal] .brand-emblem>svg:first-child{opacity:.35}
+ :root[data-accent=formal] .brand-name{font-family:var(--f-serif)!important;font-weight:500!important;font-size:22px;letter-spacing:4px!important;color:#f3eee3}
+ :root[data-accent=formal] .reference-brand small{color:#9aa1ad;letter-spacing:.06em}
+ :root[data-accent=formal] .reference-nav{gap:1px}
+ :root[data-accent=formal] .reference-nav button{border-radius:2px!important;border:0!important;color:#b7bcc6;font-weight:450;letter-spacing:.01em;box-shadow:none!important;transition:background-color .15s ease,color .15s ease}
+ :root[data-accent=formal] .reference-nav button svg{opacity:.75}
+ :root[data-accent=formal] .reference-nav button:hover:not(:disabled){background:rgb(255 255 255 / .045)!important;color:#fff}
+ :root[data-accent=formal] .reference-nav button.active{background:rgb(255 255 255 / .06)!important;color:#fff;font-weight:600;box-shadow:inset 2px 0 0 #c5a86b!important}
+ :root[data-accent=formal] .reference-nav button.active svg{opacity:1;color:#c5a86b}
+ :root[data-accent=formal] .reference-nav .dot,:root[data-accent=formal] .reference-nav button .dot{background:#c5a86b;width:5px;height:5px}
+ :root[data-accent=formal] .nav-divider{background:rgb(255 255 255 / .08)!important}
+ :root[data-accent=formal] .reference-footer{background:transparent!important;border-top:1px solid rgb(255 255 255 / .08)!important;border-radius:0!important}
+ :root[data-accent=formal] .reference-footer strong{font-family:var(--f-serif);font-size:14px;font-weight:600;letter-spacing:.02em;color:#f3eee3}
+ :root[data-accent=formal] .reference-footer>svg{color:#c5a86b;opacity:.85}
+
+ /* Page title bar */
+ :root[data-accent=formal] .reference-toolbar .title-icon{background:transparent!important;border:1px solid var(--line)!important;border-radius:var(--f-radius)!important;box-shadow:none!important;color:var(--f-gold)!important}
+ :root[data-accent=formal] .reference-toolbar h1{font-family:var(--f-serif)!important;font-weight:500!important;font-size:32px;letter-spacing:.005em!important;color:var(--ink)}
+ :root[data-accent=formal] .reference-toolbar .eyebrow{color:var(--f-gold)!important;font-size:10px;font-weight:600;letter-spacing:.22em}
+ :root[data-accent=formal] .reference-toolbar .sync-status{color:var(--muted)!important;font-size:11px}
+ :root[data-accent=formal] .reference-toolbar .sync-status::before{background:var(--f-ok)!important;box-shadow:none!important}
+ :root[data-accent=formal] .current-date strong{font-family:var(--f-serif);font-size:16px;font-weight:600;color:var(--ink)}
+
+ /* Buttons */
+ :root[data-accent=formal] :is(button,a).primary{background:var(--f-navy)!important;border:1px solid var(--f-navy)!important;color:#fbf9f4!important;border-radius:var(--f-radius)!important;box-shadow:none!important;font-weight:600;letter-spacing:.02em;text-shadow:none!important;background-image:none!important}
+ :root[data-accent=formal] :is(button,a).primary:hover:not(:disabled){background:var(--f-navy-deep)!important;border-color:var(--f-navy-deep)!important}
+ :root[data-accent=formal][data-theme=dark] :is(button,a).primary{color:#14110a!important}
+ :root[data-accent=formal] :is(button,a).secondary{background:var(--surface)!important;border:1px solid var(--line)!important;color:var(--ink)!important;border-radius:var(--f-radius)!important;box-shadow:none!important;background-image:none!important;font-weight:500}
+ :root[data-accent=formal] :is(button,a).secondary:hover:not(:disabled){border-color:color-mix(in srgb,var(--ink) 35%,var(--line))!important;background:var(--surface-soft)!important}
+ :root[data-accent=formal] :is(button.primary,button.secondary)[aria-pressed=true]{background:var(--f-navy)!important;border-color:var(--f-navy)!important;color:#fbf9f4!important}
+ :root[data-accent=formal] button:focus-visible,:root[data-accent=formal] input:focus-visible,:root[data-accent=formal] select:focus-visible,:root[data-accent=formal] textarea:focus-visible{outline:2px solid var(--f-gold)!important;outline-offset:2px}
+
+ /* Cards and panels */
+ :root[data-accent=formal] :is(.form-panel,.document,.log-panel,.dashboard-overview .panel,.report .kpi,.files-panel,.transmittal-access,.header-filters label,.panel){border:1px solid var(--line)!important;border-radius:var(--f-radius-lg)!important;box-shadow:var(--f-shadow)!important;background:var(--surface)!important;background-image:none!important}
+ :root[data-accent=formal] .form-panel,:root[data-accent=formal] .document{overflow:hidden}
+
+ /* Form header: quiet white bar with a serif title instead of the coloured band */
+ :root[data-accent=formal] .form-heading{background:var(--surface)!important;color:var(--ink)!important;border-bottom:1px solid var(--line);border-radius:0!important;padding:14px 18px!important}
+ :root[data-accent=formal] .form-heading b{font-family:var(--f-serif);font-size:19px;font-weight:600;letter-spacing:.01em}
+ :root[data-accent=formal] .form-heading svg{color:var(--f-gold)!important}
+ :root[data-accent=formal] .form-heading small{color:var(--muted)!important}
+ :root[data-accent=formal] .preview-title{font-family:var(--f-serif);font-size:19px;font-weight:600;border-bottom:1px solid var(--line)}
+ :root[data-accent=formal] .preview-title svg{color:var(--f-gold)!important}
+ :root[data-accent=formal] .paper{background:#eeebe4!important;border-radius:0!important;box-shadow:none!important}
+ :root[data-accent=formal][data-theme=dark] .paper{background:#0b0f16!important}
+
+ /* Section headings inside forms: small caps with a hairline, no pill */
+ :root[data-accent=formal] .field-section legend{background:transparent!important;border:0!important;border-bottom:1px solid var(--line)!important;border-radius:0!important;box-shadow:none!important;width:100%;padding:0 0 7px!important;margin-bottom:6px;font-size:10.5px!important;font-weight:650!important;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)!important}
+ :root[data-accent=formal] .field-section legend svg{color:var(--f-gold)!important;width:14px;height:14px}
+
+ /* Field labels */
+ :root[data-accent=formal] .form-panel .field>span{color:var(--muted)!important;font-size:11.5px;font-weight:550;letter-spacing:.01em}
+ :root[data-accent=formal] .form-panel .field[data-field-state=missing]>span{color:var(--f-empty)!important}
+ :root[data-accent=formal] .field-status-light{width:5px!important;height:5px!important;box-shadow:none!important;animation:none!important}
+ :root[data-accent=formal] .field[data-field-state=filled] .field-status-light{background:var(--f-ok)!important}
+ :root[data-accent=formal] .field:is([data-field-state=empty],[data-field-state=missing]) .field-status-light{background:var(--f-empty)!important}
+
+ /* Input boxes: square, hairline, a thin state rule on the left; no tiles, glow or running lights */
+ :root[data-accent=formal] .form-panel .field{--tile-ink:var(--muted);--empty-ink:var(--f-empty);--fill-ink:var(--f-ok);--empty-bg:var(--f-empty-soft);--fill-bg:var(--f-ok-soft)}
+ :root[data-accent=formal] .form-panel .field :is(input:not([type=checkbox]),select,textarea){border-radius:var(--f-radius)!important;border:1px solid var(--line)!important;border-left:2px solid var(--line)!important;padding-left:34px!important;background-color:var(--control)!important;background-image:none!important;box-shadow:none!important;animation:none!important;font-weight:500;color:var(--ink);transition:border-color .2s ease,background-color .2s ease}
+ :root[data-accent=formal] .form-panel .field input[style*="700"],:root[data-accent=formal] .form-panel .field select[style*="700"]{font-weight:600!important}
+ :root[data-accent=formal] .form-panel .field-input::before{display:none!important}
+ :root[data-accent=formal] .form-panel .field-input::after{display:none!important}
+ :root[data-accent=formal] .form-panel .field-input{animation:none!important}
+ :root[data-accent=formal] .form-panel .field-input>svg{color:color-mix(in srgb,var(--muted) 80%,transparent)!important;animation:none!important;left:11px!important;width:15px;height:15px;transition:color .2s ease}
+ :root[data-accent=formal] .form-panel .field[data-field-state=empty] :is(input:not([type=checkbox]),select,textarea){border-color:var(--line)!important;border-left-color:var(--f-empty)!important;background-color:var(--f-empty-soft)!important}
+ :root[data-accent=formal] .form-panel .field[data-field-state=missing] :is(input:not([type=checkbox]),select,textarea){border-color:color-mix(in srgb,var(--f-empty) 55%,var(--line))!important;border-left-color:var(--f-empty)!important;background-color:var(--f-empty-soft)!important}
+ :root[data-accent=formal] .form-panel .field[data-field-state=filled] :is(input:not([type=checkbox]),select,textarea){border-color:var(--line)!important;border-left-color:var(--f-ok)!important;background-color:var(--f-ok-soft)!important;background-image:none!important}
+ :root[data-accent=formal] .form-panel .field[data-field-state=filled] .field-input>svg{color:var(--f-ok)!important}
+ :root[data-accent=formal] .form-panel .field:is([data-field-state=empty],[data-field-state=missing]) .field-input>svg{color:color-mix(in srgb,var(--f-empty) 75%,var(--muted))!important}
+ :root[data-accent=formal] .form-panel .field :is(input:not([type=checkbox]),select,textarea):focus{border-color:var(--f-gold)!important;border-left-color:var(--f-gold)!important;background-color:var(--control)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--f-gold) 14%,transparent)!important}
+ :root[data-accent=formal] .form-panel .field:focus-within .field-input>svg{color:var(--f-gold)!important;animation:none!important}
+ :root[data-accent=formal] .form-panel .field:hover:not(:focus-within) .field-input>svg{animation:none!important}
+ :root[data-accent=formal] .form-panel .field :is(input,select,textarea)::placeholder{color:color-mix(in srgb,var(--muted) 70%,transparent);font-weight:400}
+ :root[data-accent=formal] .year-choice button{border-radius:var(--f-radius)!important;box-shadow:none!important}
+ :root[data-accent=formal] .year-choice button.on.yes{background:var(--f-ok-soft)!important;border-color:var(--f-ok)!important;color:var(--f-ok)!important}
+ :root[data-accent=formal] .year-choice button.on.no{background:var(--surface-soft)!important;border-color:var(--ink)!important;color:var(--ink)!important}
+
+ /* mm/dd/yy tags and the date box */
+ :root[data-accent=formal] .date-hint{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:2px}
+ :root[data-accent=formal] .date-pick{border-radius:2px}
+ :root[data-accent=formal] .date-box-hint{background:var(--f-navy);border-radius:2px}
+ :root[data-accent=formal] .date-box-error{background:var(--f-empty);border-radius:2px}
+
+ /* Totals */
+ :root[data-accent=formal] .fee-summary{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:transparent!important}
+ :root[data-accent=formal] .fee-summary>*{border-left-color:var(--line)!important;border-left-width:1px!important}
+ :root[data-accent=formal] .fee-summary :is(small,span){color:var(--muted)!important;font-size:11px;letter-spacing:.04em}
+ :root[data-accent=formal] .fee-summary strong{font-weight:500;color:var(--ink)}
+ :root[data-accent=formal] .total-strip{background:var(--surface-soft)!important;border:1px solid var(--line)!important;border-radius:var(--f-radius)!important;box-shadow:none!important;color:var(--ink)!important}
+ :root[data-accent=formal] .total-strip>*:first-child{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--muted)}
+ :root[data-accent=formal] .total-strip .amount-live{font-family:var(--f-serif);font-size:30px;font-weight:600;color:var(--ink)!important;letter-spacing:.01em;animation:none!important}
+ :root[data-accent=formal] .save-status,:root[data-accent=formal] .field-status-key{color:var(--muted)}
+ :root[data-accent=formal] .field-status-key .status-filled{background:var(--f-ok)!important}
+ :root[data-accent=formal] .field-status-key .status-empty{background:var(--f-empty)!important}
+ :root[data-accent=formal] .form-actions select{border-radius:var(--f-radius)!important;border:1px solid var(--line)!important;box-shadow:none!important;background-color:var(--surface)!important}
+ :root[data-accent=formal] .form-view-switch button{border-radius:var(--f-radius)!important}
+
+ /* Dashboard */
+ :root[data-accent=formal] .report .kpi{min-height:96px;padding:15px 14px!important}
+ :root[data-accent=formal] .kpi-icon,:root[data-accent=formal] .section-icon{background:transparent!important;border:1px solid var(--line);border-radius:var(--f-radius)!important;color:var(--f-gold)!important}
+ :root[data-accent=formal] .report .kpi .kpi-copy>span{text-transform:uppercase;letter-spacing:.12em;font-size:9.5px!important;font-weight:650!important}
+ :root[data-accent=formal] .report .kpi .kpi-copy>strong{font-family:var(--f-serif);font-weight:600;font-size:30px!important;letter-spacing:.005em;color:var(--ink)}
+ :root[data-accent=formal] .report .kpi.featured{background:var(--f-navy-deep)!important;border-color:var(--f-navy-deep)!important;color:#f5f1e8}
+ :root[data-accent=formal][data-theme=dark] .report .kpi.featured{background:#1c2331!important;border-color:#3a3322!important}
+ :root[data-accent=formal] .report .kpi.featured .kpi-copy>strong{color:#f5f1e8}
+ :root[data-accent=formal] .report .kpi.featured .kpi-copy>span{color:#c5a86b!important;background:transparent!important}
+ :root[data-accent=formal] .report .kpi.featured .kpi-icon{border-color:rgb(197 168 107 / .4)!important;color:#c5a86b!important}
+ :root[data-accent=formal] .report .kpi .kpi-change span{color:var(--f-ok)}
+ :root[data-accent=formal] .dashboard-overview .section-heading h2{font-family:var(--f-serif);font-size:20px!important;font-weight:600;letter-spacing:.005em}
+ :root[data-accent=formal] .chart-tabs{border-radius:var(--f-radius)!important;background:var(--surface-soft)!important}
+ :root[data-accent=formal] .chart-tabs button{border-radius:2px!important;letter-spacing:.04em}
+ :root[data-accent=formal] .chart-tabs button[aria-pressed=true],:root[data-accent=formal] .chart-tabs button.active{background:var(--f-navy)!important;color:#fbf9f4!important}
+ :root[data-accent=formal][data-theme=dark] .chart-tabs button:is([aria-pressed=true],.active){color:#14110a!important}
+ :root[data-accent=formal] .summary-svg{color:var(--f-navy)}
+ :root[data-accent=formal] .collection-rows>div:last-child,:root[data-accent=formal] .collection-total{background:var(--f-navy-deep)!important;color:#f5f1e8!important;border-radius:var(--f-radius)!important}
+ :root[data-accent=formal] .dashboard-overview .monthly th{background:var(--surface-soft)!important;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-size:9.5px}
+ :root[data-accent=formal] .dashboard-overview :is(td,.collection-rows>div,.quality-rows>div){border-bottom-color:var(--line)!important}
+ :root[data-accent=formal] .quality-rows svg{color:var(--f-gold)!important}
+ :root[data-accent=formal] .header-filters label{min-height:38px;padding:8px 12px!important}
+ :root[data-accent=formal] .header-filters svg{color:var(--f-gold)!important}
+ :root[data-accent=formal] details:is(.due-contacts,.contact-reminders){border-radius:var(--f-radius-lg)!important;box-shadow:var(--f-shadow)!important}
+
+ /* Transmittals */
+ :root[data-accent=formal] .log-controls>:is(.search,input,select,label){border-radius:var(--f-radius)!important;border:1px solid var(--line)!important;box-shadow:none!important;background:var(--surface)!important;min-height:40px}
+ :root[data-accent=formal] .log-controls button{border-radius:var(--f-radius)!important;box-shadow:none!important;min-height:40px}
+ :root[data-accent=formal] .record-reminder{background:#fbf6ea!important;border:1px solid #e8dcc0!important;border-left:2px solid var(--f-gold)!important;border-radius:var(--f-radius)!important;box-shadow:none!important}
+ :root[data-accent=formal][data-theme=dark] .record-reminder{background:#1d1b15!important;border-color:#3a3322!important}
+ :root[data-accent=formal] .record-reminder svg{color:var(--f-gold)!important}
+ :root[data-accent=formal] .record-reminder button{border-radius:var(--f-radius)!important;box-shadow:none!important}
+ :root[data-accent=formal] .log-panel :is(h2,h3,.sheet-heading,.log-title){font-family:var(--f-serif);letter-spacing:.06em}
+ :root[data-accent=formal] :is(.log-table,.sheet-table) thead th{background:var(--surface-soft)!important;color:var(--muted)!important;font-weight:650;letter-spacing:.04em;border-color:var(--line)!important}
+ :root[data-accent=formal] :is(.log-table,.sheet-table) :is(td,th){border-color:var(--line)!important}
+ :root[data-accent=formal] :is(.log-table,.sheet-table) tbody tr[data-kind] td{background:color-mix(in srgb,var(--row-shade,var(--surface)) 35%,var(--surface))!important}
+ :root[data-accent=formal] :is(.log-table,.sheet-table) tbody tr[data-kind]:hover td{background:color-mix(in srgb,var(--row-shade,var(--surface)) 60%,var(--surface))!important}
+ :root[data-accent=formal] :is(.log-table,.sheet-table) td.sheet-active{outline:2px solid var(--f-gold)!important;outline-offset:-2px}
+ :root[data-accent=formal] .record-actions button,:root[data-accent=formal] .sheet-toolbar button{border-radius:2px!important;box-shadow:none!important}
+ :root[data-accent=formal] .or-missing{border-radius:2px!important;animation:none}
+ :root[data-accent=formal] .transmittal-legend i,:root[data-accent=formal] .transmittal-legend span::before{border-radius:1px!important}
+
+ /* Dialogs */
+ :root[data-accent=formal] [data-slot=dialog-content]{border-radius:var(--f-radius-lg)!important;border:1px solid var(--line)!important;box-shadow:0 24px 48px -12px rgb(16 22 35 / .25)!important}
+ :root[data-accent=formal] [data-slot=dialog-title]{font-family:var(--f-serif)!important;font-weight:600!important;letter-spacing:.005em}
+ :root[data-accent=formal] .form-review-modal .review-emblem{border-radius:50%;background:transparent!important;border:1px solid var(--line);color:var(--f-gold)!important;box-shadow:none!important;animation:none!important}
+ :root[data-accent=formal] .form-review-modal .review-emblem::before,:root[data-accent=formal] .form-review-modal .review-emblem::after{display:none!important}
+ :root[data-accent=formal] .form-review-modal [data-slot=dialog-title]{font-size:26px!important}
+ :root[data-accent=formal] .review-document{border-radius:var(--f-radius)!important;background:var(--surface-soft)!important;border:1px solid var(--line)}
+ :root[data-accent=formal] .review-issues{border-radius:var(--f-radius)!important;background:var(--f-empty-soft)!important;border:1px solid color-mix(in srgb,var(--f-empty) 30%,var(--line))!important;box-shadow:none!important}
+ :root[data-accent=formal] .review-issue-chips button{border-radius:2px!important}
+ :root[data-accent=formal] .review-print{border-radius:var(--f-radius)!important}
+
+ /* Notices and the after-transfer bar */
+ :root[data-accent=formal] .alert{border-radius:var(--f-radius)!important;box-shadow:none!important}
+ :root[data-accent=formal] .transferred-banner{border-radius:var(--f-radius);border-color:color-mix(in srgb,var(--f-ok) 35%,var(--line));border-left:2px solid var(--f-ok);background:var(--f-ok-soft);animation:none}
+
+ /* Settings colour swatch for this theme */
+ :root[data-accent=formal] .settings-group{border-radius:var(--f-radius-lg)!important}
+
+ /* Phone header */
+ :root[data-accent=formal] .mobile-nav select,:root[data-accent=formal] .mobile-nav>button{background:#1a2338!important;border:1px solid rgb(255 255 255 / .1)!important;border-radius:var(--f-radius)!important}
+
+ /* Quiet the twilight theme's decorations: fireflies, sheens, glowing rims, floating icons, squish */
+ :root[data-accent=formal]{--puff:var(--f-shadow);--puff-small:none}
+ :root[data-accent=formal] :is(.shell>aside,.reference-nav button.active,.reference-footer,.sidebar-art,.title-icon,.report .kpi,.report .kpi.featured,.dashboard-overview .panel,.form-heading)::before,
+ :root[data-accent=formal] :is(.shell>aside,.brand-emblem,.sidebar-art,.report .kpi,.report .kpi.featured,.form-heading)::after{display:none!important;animation:none!important}
+ :root[data-accent=formal] :is(.title-icon,.kpi-icon,.section-icon,.reference-footer>svg,.preview-title svg,.transaction-point,.report .kpi:hover .kpi-icon svg,.reference-nav button:hover>svg){animation:none!important}
+ :root[data-accent=formal] .brand-name{background:none!important;-webkit-background-clip:border-box!important;background-clip:border-box!important;-webkit-text-fill-color:currentColor;animation:none!important}
+ :root[data-accent=formal] :is(.primary,.secondary,.reference-nav button,.report .kpi,.dashboard-overview .panel,.kpi-icon,.section-icon,.title-icon,.brand-emblem,.paper-page,.review-issue-chips button,.chart-tabs button,.field,.access-lock,.reference-footer,.mobile-record){scale:none!important;translate:none!important}
+ :root[data-accent=formal] .reference-nav button:not(.active):hover:not(:disabled){box-shadow:none!important}
+ :root[data-accent=formal] .kpi-icon,:root[data-accent=formal] .section-icon,:root[data-accent=formal] .reference-toolbar .title-icon{box-shadow:none!important}
+ :root[data-accent=formal] .report .kpi:hover{border-color:color-mix(in srgb,var(--f-gold) 45%,var(--line))!important;box-shadow:var(--f-shadow)!important}
+ :root[data-accent=formal] .summary-svg g:hover .chart-column{filter:brightness(1.15)}
+ :root[data-accent=formal] :is(.access-options>button,.review-actions .review-print){border-radius:var(--f-radius)!important}
+ :root[data-accent=formal] .field-section legend,:root[data-accent=formal] .chart-tabs,:root[data-accent=formal] .review-document,:root[data-accent=formal] .total-strip{border-radius:var(--f-radius)!important}
+ :root[data-accent=formal] .field-section legend{border-radius:0!important}
+
+ /* Lining figures for serif numbers (the serif's old-style figures make 12 look like I 2) */
+ :root[data-accent=formal] :is(.report .kpi .kpi-copy>strong,.total-strip .amount-live,.current-date strong){font-variant-numeric:lining-nums tabular-nums;font-feature-settings:'lnum' 1,'tnum' 1}
+
+ /* Sidebar footer: name above the place */
+ :root[data-accent=formal] .reference-footer>div{display:flex;flex-direction:column;gap:4px;min-width:0}
+ :root[data-accent=formal] .reference-footer small{display:block;color:#8e95a2;font-size:10.5px;letter-spacing:.04em}
+
+ @media (min-width:1001px){:root[data-accent=formal] .toolbar-buttons button{min-height:34px;height:34px;padding:0 12px;font-size:12px}}
+ @media (max-width:1000px){
+  :root[data-accent=formal] .report .kpi .kpi-copy>span{letter-spacing:.05em;padding-right:38px}
+  :root[data-accent=formal] .reference-toolbar h1{font-size:30px}
+ }
+
+ /* Breakdown dots in the formal palette */
+ :root[data-accent=formal] .collection-dot{border-radius:1px!important;box-shadow:none!important}
+ :root[data-accent=formal] .collection-dot.dot-0{background:#1d2940!important}
+ :root[data-accent=formal] .collection-dot.dot-1{background:#a8874a!important}
+ :root[data-accent=formal] .collection-dot.dot-2{background:#6f8299!important}
+ :root[data-accent=formal] .collection-dot.dot-3{background:#a5483d!important}
+ :root[data-accent=formal] .collection-dot.dot-4{background:#3f7a5c!important}
+ :root[data-accent=formal][data-theme=dark] .collection-dot.dot-0{background:#e8e2d4!important}
+ :root[data-accent=formal][data-theme=dark] .collection-dot.dot-1{background:#c5a86b!important}
+ :root[data-accent=formal][data-theme=dark] .collection-dot.dot-2{background:#8fa3bb!important}
+ :root[data-accent=formal][data-theme=dark] .collection-dot.dot-3{background:#e08a7d!important}
+ :root[data-accent=formal][data-theme=dark] .collection-dot.dot-4{background:#7dbb98!important}
+ @media (max-width:640px){
+  :root[data-accent=formal] .report .kpi .kpi-copy{padding-right:34px;min-width:0}
+  :root[data-accent=formal] .report .kpi .kpi-copy>span{letter-spacing:.03em;padding-right:0;overflow-wrap:anywhere}
+  :root[data-accent=formal] .reference-toolbar h1{font-size:25px!important;white-space:normal!important}
+  :root[data-accent=formal] .reference-toolbar .eyebrow{letter-spacing:.14em;font-size:9px}
+ }
+ :root[data-accent=formal] .form-view-switch{background:var(--surface-soft)!important;border:1px solid var(--line);border-radius:var(--f-radius)!important}
+ :root[data-accent=formal] .form-view-switch button.active{background:var(--surface)!important;box-shadow:0 0 0 1px var(--line)!important;color:var(--ink)}
+}
