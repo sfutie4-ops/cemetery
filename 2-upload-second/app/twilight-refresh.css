@@ -472,3 +472,25 @@
  [data-motion=off] .year-choice button svg{animation:none!important}
 }
 @media screen and (max-width:720px){.year-choice button{font-size:13px;padding:6px 4px}.form-panel .field-choice .field-input{padding-left:33px}}
+
+/* ---- mm/dd/yy date boxes ---- */
+.date-box{position:relative;display:block;width:100%;min-width:0}
+.date-box>input:first-child{width:100%;padding-right:32px;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.date-pick{position:absolute;z-index:3;right:5px;top:50%;translate:0 -50%;width:24px;height:24px;display:grid;place-items:center;padding:0;border:0;border-radius:4px;background:transparent;color:var(--muted);cursor:pointer;transition:background .15s ease,color .15s ease}
+.date-pick:hover,.date-pick:focus-visible{background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent)}
+.date-native{position:absolute;right:0;bottom:0;width:1px;height:1px;padding:0;border:0;opacity:0;pointer-events:none}
+.date-hint{margin-left:6px;padding:0 5px;border-radius:3px;font:600 10px/16px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.05em;text-transform:none;vertical-align:1px;color:var(--muted);background:color-mix(in srgb,var(--muted) 12%,transparent)}
+.date-box-bad>input:first-child{border-color:var(--warning-ink)!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--warning-ink) 16%,transparent)!important}
+.date-box-error{position:absolute;z-index:4;left:0;top:calc(100% + 3px);padding:2px 6px;border-radius:3px;white-space:nowrap;font-size:11px;font-weight:600;color:#fff;background:var(--warning-ink)}
+.date-box-hint{position:absolute;z-index:4;left:0;bottom:calc(100% + 3px);padding:1px 5px;border-radius:3px;white-space:nowrap;font:600 10px/14px ui-monospace,SFMono-Regular,Menlo,monospace;color:#fff;background:var(--accent);pointer-events:none}
+.date-box.date-box-plain>input:first-child{padding-left:3px;padding-right:3px;letter-spacing:0}
+@media print{.date-hint,.date-pick,.date-box-hint,.date-box-error{display:none!important}}
+
+/* ---- after Transfer: saved, waiting to be printed ---- */
+.transferred-banner{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin:10px 0 0;padding:10px 12px;border-radius:6px;border:1px solid color-mix(in srgb,var(--success-ink) 40%,var(--line));background:color-mix(in srgb,var(--success-ink) 9%,var(--surface));color:var(--ink);animation:tile-pop .45s cubic-bezier(.3,1.6,.5,1) 1}
+.transferred-banner>svg{flex:none;color:var(--success-ink)}
+.transferred-banner p{flex:1 1 220px;margin:0;font-size:13px;line-height:1.4}
+.transferred-banner .primary{flex:none}
+.transferred-banner .review-link{flex:none;font-size:12px}
+.transferred-done{opacity:.85;cursor:default}
+@media print{.transferred-banner{display:none!important}}

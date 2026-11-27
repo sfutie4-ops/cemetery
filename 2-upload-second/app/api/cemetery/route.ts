@@ -1,6 +1,6 @@
 import {editStatus,sameOrigin,sessionHash,sessionQuery,accessFor} from '../../../lib/edit-access';
 import {database,readOnly} from '../../../lib/storage';
-import {formNames, transfer, clearFields, today, cleanText, mobileText, type Fields} from '../../../lib/model';
+import {formNames, transfer, today, cleanText, mobileText, type Fields} from '../../../lib/model';
 
 import {promissorySheet,promissoryRecord,promissoryFields,isPromissory,refreshPromissoryText} from '../../../lib/promissory';
 import {publicReports} from '../../../lib/public-reports';
@@ -69,19 +69,23 @@ export async function POST(request: Request) {
       if (existing) return json({record: storedRecord(existing), duplicate: true});
       const draft = await db.prepare('SELECT fields,revision FROM drafts WHERE name=?').bind(body.name).first();
       if (!draft || draft.revision !== body.revision) return json({error: 'The saved form changed. Review the latest version before transferring.'}, 409);
-      const fields = validate(JSON.parse(draft.fields)), row = transfer(body.name, fields, today(), at), id = crypto.randomUUID();
-      const cleared = clearFields(body.name, fields);
+      const fields = validate(JSON.parse(draft.fields));
+      if (fields.TX1) return json({error: 'This form is already in the transmittal. Print it (printing clears the form) or clear it to start a new entry.'}, 400);
+      const row = transfer(body.name, fields, today(), at), id = crypto.randomUUID();
+      // The form keeps its data after a transfer so it can still be printed; TX1 marks it as transferred.
+      // Printing (or Clear form) empties it for the next entry.
+      const kept = {...fields, TX1: id};
       const results = await db.batch([
         db.prepare(`INSERT INTO records(id,sheet,number,payload,created_at,token)
           SELECT ?,?,COALESCE(MAX(number),0)+1,?,?,? FROM records WHERE sheet=?
           HAVING EXISTS (SELECT 1 FROM drafts WHERE name=? AND revision=?) RETURNING number`)
           .bind(id, row.sheet, JSON.stringify({...row, id, revision: 0}), at, body.token, row.sheet, body.name, body.revision),
         db.prepare('UPDATE drafts SET fields=?,updated_at=?,revision=revision+1 WHERE name=? AND revision=?')
-          .bind(JSON.stringify(cleared), at, body.name, body.revision),
+          .bind(JSON.stringify(kept), at, body.name, body.revision),
       ]);
       if (!results[0].results.length) return json({error: 'The form changed during transfer. Review it before trying again.'}, 409);
       row.values[0] = results[0].results[0].number;
-      return json({record: {...row, id, revision: 0}, fields: cleared, revision: body.revision + 1, updatedAt: at});
+      return json({record: {...row, id, revision: 0}, fields: kept, revision: body.revision + 1, updatedAt: at});
     }
     if(body.action==='insertRecord'){
       if(!['transmital municipal','transmital Aranda'].includes(body.sheet)||typeof body.token!=='string'||!/^([\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12})$/i.test(body.token)||!Array.isArray(body.values)||body.values.length!==20||body.values.some((value:any)=>value!=null&&(!['string','number'].includes(typeof value)||typeof value==='number'&&!Number.isFinite(value))))return json({error:'Invalid new row.'},400);
