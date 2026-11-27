@@ -7,8 +7,9 @@ import "./transmittal-polish.css";
 import "./twilight-refresh.css";
 import "./formal.css";
 
-const display = Marcellus({ weight: "400", subsets: ["latin"], variable: "--font-display", display: "swap" });
-const formal = Cormorant_Garamond({ weight: ["500", "600"], subsets: ["latin"], variable: "--font-formal", display: "swap" });
+// Marcellus is only used by the older colour themes, so it is not preloaded.
+const display = Marcellus({ weight: "400", subsets: ["latin"], variable: "--font-display", display: "swap", preload: false });
+const formal = Cormorant_Garamond({ weight: "600", subsets: ["latin"], variable: "--font-formal", display: "swap" });
 
 export const metadata: Metadata = {
   title: "Municipal Cemetery — Hinigaran",

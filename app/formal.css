@@ -34,7 +34,7 @@
  :root[data-accent=formal] .reference-brand{padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid rgb(255 255 255 / .08)}
  :root[data-accent=formal] .brand-emblem{color:#c5a86b}
  :root[data-accent=formal] .brand-emblem>svg:first-child{opacity:.35}
- :root[data-accent=formal] .brand-name{font-family:var(--f-serif)!important;font-weight:500!important;font-size:22px;letter-spacing:4px!important;color:#f3eee3}
+ :root[data-accent=formal] .brand-name{font-family:var(--f-serif)!important;font-weight:600!important;font-size:22px;letter-spacing:4px!important;color:#f3eee3}
  :root[data-accent=formal] .reference-brand small{color:#9aa1ad;letter-spacing:.06em}
  :root[data-accent=formal] .reference-nav{gap:1px}
  :root[data-accent=formal] .reference-nav button{border-radius:2px!important;border:0!important;color:#b7bcc6;font-weight:450;letter-spacing:.01em;box-shadow:none!important;transition:background-color .15s ease,color .15s ease}
@@ -50,7 +50,7 @@
 
  /* Page title bar */
  :root[data-accent=formal] .reference-toolbar .title-icon{background:transparent!important;border:1px solid var(--line)!important;border-radius:var(--f-radius)!important;box-shadow:none!important;color:var(--f-gold)!important}
- :root[data-accent=formal] .reference-toolbar h1{font-family:var(--f-serif)!important;font-weight:500!important;font-size:32px;letter-spacing:.005em!important;color:var(--ink)}
+ :root[data-accent=formal] .reference-toolbar h1{font-family:var(--f-serif)!important;font-weight:600!important;font-size:32px;letter-spacing:.005em!important;color:var(--ink)}
  :root[data-accent=formal] .reference-toolbar .eyebrow{color:var(--f-gold)!important;font-size:10px;font-weight:600;letter-spacing:.22em}
  :root[data-accent=formal] .reference-toolbar .sync-status{color:var(--muted)!important;font-size:11px}
  :root[data-accent=formal] .reference-toolbar .sync-status::before{background:var(--f-ok)!important;box-shadow:none!important}
@@ -242,4 +242,44 @@
  }
  :root[data-accent=formal] .form-view-switch{background:var(--surface-soft)!important;border:1px solid var(--line);border-radius:var(--f-radius)!important}
  :root[data-accent=formal] .form-view-switch button.active{background:var(--surface)!important;box-shadow:0 0 0 1px var(--line)!important;color:var(--ink)}
+
+ /* Semi-3D relief (the earlier raised look, in the formal palette): surfaces sit on a thin darker edge
+    with a light top lip; buttons press down; input boxes are slightly sunken. */
+ :root[data-accent=formal]{
+  --f-lip:inset 0 1px 0 rgb(255 255 255 / .95);
+  --f-edge:#d2c9b8;--f-edge-deep:#0b1120;
+  --f-raise:var(--f-lip),0 3px 0 var(--f-edge),0 12px 22px -14px rgb(16 22 35 / .3);
+  --f-raise-small:var(--f-lip),0 3px 0 var(--f-edge),0 5px 9px -6px rgb(16 22 35 / .26);
+  --f-sunk:inset 0 2px 3px rgb(16 22 35 / .07),inset 0 1px 0 rgb(16 22 35 / .04);
+  --f-shadow:var(--f-raise)
+ }
+ :root[data-accent=formal][data-theme=dark]{
+  --f-lip:inset 0 1px 0 rgb(255 255 255 / .06);--f-edge:#05080d;--f-edge-deep:#6e5a30;
+  --f-raise:var(--f-lip),0 3px 0 var(--f-edge),0 12px 22px -14px rgb(0 0 0 / .7);
+  --f-raise-small:var(--f-lip),0 3px 0 var(--f-edge),0 4px 8px -6px rgb(0 0 0 / .6);
+  --f-sunk:inset 0 2px 4px rgb(0 0 0 / .35)
+ }
+ :root[data-accent=formal] :is(.form-panel,.document,.log-panel,.dashboard-overview .panel,.report .kpi,.files-panel,.transmittal-access,.header-filters label,.panel){box-shadow:var(--f-raise)!important}
+ :root[data-accent=formal] .report .kpi:hover{box-shadow:var(--f-lip),0 3px 0 var(--f-edge),0 14px 24px -14px rgb(16 22 35 / .32)!important;transform:translateY(-1px)}
+ :root[data-accent=formal] .report .kpi.featured{box-shadow:inset 0 1px 0 rgb(255 255 255 / .12),0 2px 0 #070b14,0 12px 22px -12px rgb(16 22 35 / .45)!important;background-image:linear-gradient(180deg,rgb(255 255 255 / .06),transparent 55%)!important}
+ :root[data-accent=formal] :is(.kpi-icon,.section-icon,.reference-toolbar .title-icon){background:linear-gradient(180deg,var(--surface),var(--surface-soft))!important;box-shadow:var(--f-raise-small)!important}
+ :root[data-accent=formal] .report .kpi.featured .kpi-icon{background:rgb(255 255 255 / .06)!important;box-shadow:inset 0 1px 0 rgb(255 255 255 / .12),0 2px 0 #070b14!important}
+
+ /* Buttons: raised, press down when clicked */
+ :root[data-accent=formal] :is(button,a).secondary{box-shadow:var(--f-raise-small)!important;background-image:linear-gradient(180deg,var(--surface),var(--surface-soft))!important;transition:transform .12s ease,box-shadow .12s ease,border-color .15s ease}
+ :root[data-accent=formal] :is(button,a).primary{box-shadow:inset 0 1px 0 rgb(255 255 255 / .14),0 3px 0 var(--f-edge-deep),0 6px 12px -8px rgb(16 22 35 / .5)!important;background-image:linear-gradient(180deg,rgb(255 255 255 / .09),transparent 60%)!important;transition:transform .12s ease,box-shadow .12s ease}
+ :root[data-accent=formal] :is(button,a):is(.primary,.secondary):active:not(:disabled){transform:translateY(3px);box-shadow:inset 0 1px 2px rgb(16 22 35 / .18)!important}
+ :root[data-accent=formal] :is(button,a):is(.primary,.secondary):disabled{box-shadow:none!important}
+ :root[data-accent=formal] .reference-nav button.active{box-shadow:inset 2px 0 0 #c5a86b,inset 0 1px 0 rgb(255 255 255 / .08),0 2px 0 rgb(0 0 0 / .35)!important;background-image:linear-gradient(180deg,rgb(255 255 255 / .05),transparent)!important}
+ :root[data-accent=formal] .chart-tabs{box-shadow:var(--f-sunk)!important}
+ :root[data-accent=formal] .chart-tabs button:is([aria-pressed=true],.active){box-shadow:inset 0 1px 0 rgb(255 255 255 / .14),0 1px 0 var(--f-edge-deep)!important}
+
+ /* Input boxes: gently sunken; the state rule on the left stays */
+ :root[data-accent=formal] .form-panel .field :is(input:not([type=checkbox]),select,textarea){box-shadow:var(--f-sunk)!important}
+ :root[data-accent=formal] .form-panel .field :is(input:not([type=checkbox]),select,textarea):focus{box-shadow:var(--f-sunk),0 0 0 3px color-mix(in srgb,var(--f-gold) 16%,transparent)!important}
+ :root[data-accent=formal] .log-controls>:is(.search,input,select,label),:root[data-accent=formal] .total-strip{box-shadow:var(--f-sunk)!important}
+ :root[data-accent=formal] .log-controls button{box-shadow:var(--f-raise-small)!important}
+ :root[data-accent=formal] .paper-page{box-shadow:0 1px 0 rgb(16 22 35 / .06),0 14px 28px -16px rgb(16 22 35 / .4)!important}
+ :root[data-accent=formal] [data-slot=dialog-content]{box-shadow:var(--f-lip),0 3px 0 var(--f-edge),0 28px 56px -16px rgb(16 22 35 / .4)!important}
+ @media (prefers-reduced-motion:reduce){:root[data-accent=formal] :is(button,a):is(.primary,.secondary):active:not(:disabled),:root[data-accent=formal] .report .kpi:hover{transform:none}}
 }
