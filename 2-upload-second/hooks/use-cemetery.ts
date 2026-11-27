@@ -9,6 +9,26 @@ type FormState = {fields: Fields; revision: number; updatedAt: string; dirty: bo
 type State = {forms: Record<string, FormState>; records: RecordRow[]; loaded: boolean; online: boolean; lastSync: string;recordsAccessible:boolean;publicReports?:PublicReports};
 type SaveResult = {revision: number; updatedAt: string};
 type TransferResult = SaveResult & {record: RecordRow; fields: Fields; duplicate?: boolean};
+// The last snapshot is kept for this browser tab only (sessionStorage), so a refresh shows the records at once
+// while the fresh copy loads. Admin records are kept apart from the public view and removed on logout.
+const SNAPSHOT='cemetery-snapshot-v1:';
+const snapshotKey=(admin:boolean)=>SNAPSHOT+(admin?'admin':'guest');
+function readSnapshot(admin:boolean,query:string):Snapshot|null{
+  try{const saved=JSON.parse(sessionStorage.getItem(snapshotKey(admin))??'null');return saved&&saved.query===query&&saved.data?saved.data as Snapshot:null}catch{return null}
+}
+function writeSnapshot(admin:boolean,query:string,data:Snapshot){try{sessionStorage.setItem(snapshotKey(admin),JSON.stringify({query,data}))}catch{/* full or blocked: skip */}}
+function dropSnapshot(admin:boolean){try{sessionStorage.removeItem(snapshotKey(admin))}catch{}}
+// Drafts from the server replace local forms only when they are newer and the local copy has no unsaved typing.
+function mergeSnapshot(old:State,data:Snapshot,fresh:boolean):State{
+  return {...old, loaded: true, online: true, lastSync: fresh?new Date().toISOString():old.lastSync, records: data.records,recordsAccessible:data.recordsAccessible,publicReports:data.publicReports,
+    forms: Object.fromEntries(formNames.map(name => {
+      const local = old.forms[name], remote = data.drafts[name];
+      if (!remote || remote.revision <= local.revision) return [name, fresh && !old.online && !local.conflict ? {...local, saveError: undefined} : local];
+      if (local.dirty) return [name, fresh ? {...local, conflict: remote} : local];
+      return [name, {...remote, dirty: false}];
+    })),
+  };
+}
 const initialState = (): State => ({
   forms: Object.fromEntries(formNames.map(name => [name, {fields: defaultFields(name), revision: 0, updatedAt: '', dirty: false}])),
   records: [], loaded: false, online: true, lastSync: '', recordsAccessible:false,
@@ -28,6 +48,10 @@ export function useCemetery(canEdit=true,options:ReportOptions={year:2026,scope:
   const writeEpoch = useRef(0);
   const mounted = useRef(true);
   const tokens = useRef<Record<string, string>>({});
+  const freshKey = useRef('');
+  const syncRequestKey = useRef('');
+  const lockEpoch = useRef(0);
+  const wasUnlocked = useRef(false);
   const apply = useCallback((update: (old: State) => State) => {
     if (!mounted.current) return;
     current.current = update(current.current);
@@ -36,25 +60,24 @@ export function useCemetery(canEdit=true,options:ReportOptions={year:2026,scope:
 
   const sync = useCallback(async (signal?: AbortSignal, requireAccess=false) => {
     if (operation.current || savingRef.current) {if(requireAccess)throw Error('A save is in progress. Please retry.');return;}
-    if(syncRequest.current){if(!requireAccess)return;syncRequest.current.abort();}
-    const controller=new AbortController();syncRequest.current=controller;
+    // A read already on its way for the same view is reused. If the login state or the period changed
+    // since it started, its answer would be thrown away, so it is replaced right away instead of
+    // leaving the page on "Loading" until the next 30-second refresh.
+    const key=`${lockEpoch.current}|${queryRef.current}`;
+    if(syncRequest.current){if(!requireAccess&&syncRequestKey.current===key)return;syncRequest.current.abort();}
+    const controller=new AbortController();syncRequest.current=controller;syncRequestKey.current=key;
     const abort=()=>controller.abort();signal?.addEventListener('abort',abort,{once:true});
     const timeout=setTimeout(()=>controller.abort(),45000);
-    const requestedQuery=queryRef.current, requestedAccess=accessRef.current;
+    const requestedQuery=queryRef.current, requestedEpoch=lockEpoch.current;
     const epoch = writeEpoch.current;
     try {
       const data = await cemeteryApi<Snapshot>(undefined, controller.signal,requestedQuery);
       // A write can start while the read is in flight. Its older snapshot must not replace that write.
-      if (signal?.aborted || syncRequest.current!==controller || operation.current || savingRef.current || epoch !== writeEpoch.current || requestedQuery!==queryRef.current || (!requireAccess&&requestedAccess!==accessRef.current)) return;
+      if (signal?.aborted || syncRequest.current!==controller || operation.current || savingRef.current || epoch !== writeEpoch.current || requestedQuery!==queryRef.current || requestedEpoch!==lockEpoch.current) return;
       if(requireAccess&&!data.recordsAccessible)throw Error('Your Admin session could not be confirmed. Please log in again.');
-      apply(old => ({...old, loaded: true, online: true, lastSync: new Date().toISOString(), records: data.records,recordsAccessible:data.recordsAccessible,publicReports:data.publicReports,
-        forms: Object.fromEntries(formNames.map(name => {
-          const local = old.forms[name], remote = data.drafts[name];
-          if (!remote || remote.revision <= local.revision) return [name, !old.online && !local.conflict ? {...local, saveError: undefined} : local];
-          if (local.dirty) return [name, {...local, conflict: remote}];
-          return [name, {...remote, dirty: false}];
-        })),
-      }));
+      apply(old => mergeSnapshot(old, data, true));
+      freshKey.current=requestedQuery;
+      writeSnapshot(data.recordsAccessible, requestedQuery, data);
       setError(previous => current.current.loaded && previous === 'Records could not be loaded. Check your connection and retry.' ? '' : previous);
     } catch (e) {
       if (signal?.aborted) return;
@@ -65,7 +88,14 @@ export function useCemetery(canEdit=true,options:ReportOptions={year:2026,scope:
     } finally { clearTimeout(timeout);signal?.removeEventListener('abort',abort);if(syncRequest.current===controller)syncRequest.current=null; }
   }, [apply]);
 
-  useEffect(()=>{if(!unlocked)apply(old=>({...old,records:[],recordsAccessible:false}));void sync()},[unlocked,query,apply,sync]);
+  useEffect(()=>{
+    // Logging out: answers requested before it are ignored and this tab's saved Admin copy is removed.
+    if(!unlocked&&wasUnlocked.current){lockEpoch.current++;dropSnapshot(true);apply(old=>({...old,records:[],recordsAccessible:false}))}
+    wasUnlocked.current=unlocked;
+    // Show this tab's saved copy straight away, unless fresher data for this view has already arrived.
+    // The server's answer (which checks the login itself) replaces it a moment later.
+    if(freshKey.current!==query){const saved=readSnapshot(true,query)??readSnapshot(false,query);if(saved)apply(old=>mergeSnapshot(old,saved,false))}
+    void sync()},[unlocked,query,apply,sync]);
 
   useEffect(() => {
     mounted.current = true;
