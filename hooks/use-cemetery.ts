@@ -1,6 +1,6 @@
 'use client';
 import {useCallback, useEffect, useRef, useState} from 'react';
-import {cleanText, defaultFields, formNames, type Fields, type RecordRow} from '../lib/model';
+import {cleanText, clearFields, defaultFields, formNames, type Fields, type RecordRow} from '../lib/model';
 import type {PublicReports,ReportOptions} from '../lib/public-reports';
 import {ApiError, cemeteryApi, type Draft, type Snapshot} from '../lib/cemetery-api';
 import {isNewRow} from '../lib/transmittal';
@@ -131,6 +131,12 @@ export function useCemetery(canEdit=true,options:ReportOptions={year:2026,scope:
     tokens.current[name] = ''; setError(''); setNotice('');
   }, [apply]);
 
+  // Empties a form for the next entry (after printing a transferred form, or Clear form). Autosave stores it.
+  const clear = useCallback((name: string) => {
+    apply(old => ({...old, forms: {...old.forms, [name]: {...old.forms[name], fields: clearFields(name, old.forms[name].fields), dirty: true, saveError: undefined}}}));
+    tokens.current[name] = ''; setError('');
+  }, [apply]);
+
   const resolve = useCallback((name: string, useRemote: boolean) => {
     apply(old => {
       const form = old.forms[name], remote = form.conflict;
@@ -160,7 +166,7 @@ export function useCemetery(canEdit=true,options:ReportOptions={year:2026,scope:
           }));
         }
         tokens.current[name] = '';
-        setNotice(`Entry added to ${result.record.sheet === 'transmital promissory' ? 'Promissory' : result.record.sheet === 'transmital Aranda' ? 'Aranda' : 'Municipal'} transmittal.${result.record.sheet!=='transmital promissory'&&!String(result.record.values[12]??'').trim()?' Remember to encode its O.R. number using the O.R. button in the transmittal.':''}`);
+        setNotice(`Entry added to ${result.record.sheet === 'transmital promissory' ? 'Promissory' : result.record.sheet === 'transmital Aranda' ? 'Aranda' : 'Municipal'} transmittal. The form keeps its data — press Print; printing clears the form.${result.record.sheet!=='transmital promissory'&&!String(result.record.values[12]??'').trim()?' Remember to encode its O.R. number using the O.R. button in the transmittal.':''}`);
       } else setNotice('Form saved.');
     } catch (e) {
       if (e instanceof ApiError && e.status === 409) await markConflict(name);
@@ -202,5 +208,5 @@ export function useCemetery(canEdit=true,options:ReportOptions={year:2026,scope:
     finally{operation.current=false;setBusy(false)}
   },[apply]);
 
-  return {...state, busy, saving, error, notice, setNotice, update, action, saveRecord, savePermit, deleteRecord, sync, resolve};
+  return {...state, busy, saving, error, notice, setNotice, update, clear, action, saveRecord, savePermit, deleteRecord, sync, resolve};
 }
